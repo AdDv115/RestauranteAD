@@ -1,13 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
 
-body{
-    font-family: "Roboto Slab", serif;
-    font-optical-sizing: auto;
-    font-weight: bold;
-    font-style: normal;
-    background-color: #FEF9E1;
-    justify-content: center;
-    align-items: center;
+body {
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: bold;
+  font-style: normal;
+  background-color: #FEF9E1;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 ul {
@@ -57,7 +58,48 @@ ul {
     transition: 0.2s ease-in;
 }
 
+.Contenedor{
+    display: flex;
+    margin-top: 200px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    gap: 30px;
+    flex-direction: column;
+}
+
+.Galeria{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    gap: 30px;
+}
+
 /*Galeria de fotos*/
 
+.item{
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    background-color: #C14600;
+    padding: 15px;
+    border-radius: 16px;
+}
 
+.fotos{
+    border-radius: 16px;
+    width: 350px;
+    height: 220px;
+    display: flex;
+    
+}
 
+.text{
+    background-color: #E5D0AC;
+    color: #C14600;
+    padding: 15px;
+    border-radius: 14px;
+}

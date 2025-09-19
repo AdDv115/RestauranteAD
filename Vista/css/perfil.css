@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
+
+body{
+    font-family: "Roboto Slab", serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    background-color: #FEF9E1;
+}
+
+ul {
+    list-style-type: none;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 50px 0px 50px;
+    text-decoration: none;
+}
+
+.botonesnav {
+    display: block;
+    color: #C14600;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-size: 18px;
+    background-color: #E5D0AC;
+    border-radius: 26px;
+    transition: 0.2s ease-out;
+}
+
+#logo{
+    width: 120px;
+    border: #C14600 3px solid;
+    border-radius: 100%;
+}
+
+#navbotones{
+    background-color: #C14600;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    gap: 210px;
+    padding: 15px;
+    border-radius: 24px;
+}
+
+.botonesnav:hover{
+    background-color: #FF9D23;
+    color: #FEF9E1;
+    transition: 0.2s ease-in;
+}
+
+/*Perfil*/
+
+.Contenedor {
+    display: flex;
+    margin-top: 200px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+.user{
+    background-color: #C14600;
+    padding: 50px;
+    color: #E5D0AC;
+    border-radius: 26px;
+}
