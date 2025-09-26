@@ -23,7 +23,9 @@
 
 <div class="Contenedor">
   <h1 class="text">Registro</h1>
-    <form>
+  
+    <form action="../../Controlador/usuarioController.php" method="POST">
+
         <label>Nombre</label>
         <input type="text" name="Nombre">
     

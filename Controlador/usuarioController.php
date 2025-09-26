@@ -7,12 +7,12 @@ class UsuarioController {
     private $modelUser;
 
     public function __construct() {
-        $this->modelUser = new Usuario();
+        $this -> modelUser = new Usuario();
     }
 
     public function validarUser() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $usuario = $this->modelUser->login($_POST['Email'], $_POST['Password']);
+            $usuario = $this -> modelUser -> login($_POST['Email'], $_POST['Password']);
 
             if ($usuario) {
                 session_start();
@@ -29,6 +29,22 @@ class UsuarioController {
         }
     }
 
+    public function registrar(){
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $nombre = $_POST['Nombre'];
+            $apellido = $_POST['Apellido'];
+            $email = $_POST['Email'];
+            $pass = $_POST['Password'];
+            $rolusu = $_POST['rol'];
+            $telefono = $_POST['Telefono'];
+
+            $usuario = new Usuario();
+            $usuario = $this -> modelUser -> crearUser($nombre, $apellido, $email, $pass, $rolusu, $telefono);
+
+            header("Location: ../Vista/html/perfil.php");
+        }
+    }
+
     public function cerrarSesion() {
         session_start();
         session_destroy();
@@ -40,4 +56,5 @@ class UsuarioController {
 // Ejecutar el controlador
 $controller = new UsuarioController();
 $controller->validarUser();
+$controller->registrar();
 ?>

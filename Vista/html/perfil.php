@@ -1,3 +1,5 @@
+<?php session_start() ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +25,7 @@
 
 <div class="Contenedor">
     <div class="user">
-        <h1>Bienvenido</h1>
+        <h1>Bienvenido, <?php echo htmlspecialchars($nombre); ?>></h1>
         <img src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png">
         <h2>Email: </h2>
         <h2>Telefono: </h2>

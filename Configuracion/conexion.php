@@ -5,7 +5,7 @@ class DB{
 
     //Definir los atributos
     private static $host = "localhost";
-    private static $dbname = "restad";
+    private static $dbname = "resad";
     private static $username = "Adless";
     private static $password = "115";
     private static $charset = "utf8mb4";
