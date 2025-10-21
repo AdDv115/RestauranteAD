@@ -24,7 +24,7 @@
 <div class="Contenedor">
   <h1 class="text">Registro</h1>
   
-    <form action="../../Controlador/usuarioController.php" method="POST">
+    <form action="../../Controlador/usuarioController.php?action=registrar" method="POST">
 
         <label>Nombre</label>
         <input type="text" name="Nombre">

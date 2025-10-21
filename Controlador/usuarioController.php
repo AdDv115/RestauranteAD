@@ -16,9 +16,15 @@ class UsuarioController {
 
             if ($usuario) {
                 session_start();
-                $_SESSION['usuarios'] = $usuario;
+                $_SESSION['usuario_logueado'] = $usuario;
+
+            if ($usuario['Rolusu'] === 'Administrador') {
+                $_SESSION['lista_usuarios'] = $this->modelUser->listarUser();
+                }
+
                 header("Location:../Vista/html/perfil.php");
                 exit();
+
             } else {
                 header("Location:../Vista/html/login.php");
                 exit();
@@ -30,6 +36,7 @@ class UsuarioController {
     }
 
     public function registrar(){
+
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $nombre = $_POST['Nombre'];
             $apellido = $_POST['Apellido'];
@@ -40,8 +47,8 @@ class UsuarioController {
 
             $usuario = new Usuario();
             $usuario = $this -> modelUser -> crearUser($nombre, $apellido, $email, $pass, $rolusu, $telefono);
-
-            header("Location: ../Vista/html/perfil.php");
+                
+            header("Location: ../Vista/html/login.php");
         }
     }
 
@@ -55,6 +62,26 @@ class UsuarioController {
 
 // Ejecutar el controlador
 $controller = new UsuarioController();
-$controller->validarUser();
-$controller->registrar();
-?>
+
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+
+    switch ($action) {
+        case 'login':
+            $controller->validarUser();
+            break;
+        case 'registrar':
+            $controller->registrar();
+            break;
+        case 'cerrarSesion':
+            $controller->cerrarSesion();
+            break;
+        default:
+        
+            header("Location:../Vista/html/login.php");
+            exit();
+    }
+} else {
+    header("Location:../Vista/html/login.php");
+    exit();
+}

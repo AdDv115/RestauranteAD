@@ -1,23 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
 
-body{
+body {
     font-family: "Roboto Slab", serif;
     font-optical-sizing: auto;
     font-weight: bold;
     font-style: normal;
     background-color: #FEF9E1;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+nav {
+    width: 100%;
 }
 
 ul {
     list-style-type: none;
-    justify-content: center;
-    flex-direction: row;
-    align-items: center;
-    text-align: center;
     display: flex;
     justify-content: space-between;
-    margin: 0px 50px 0px 50px;
-    text-decoration: none;
+    align-items: center;
+    padding: 10px 20px;
+    margin: 0;
+}
+
+#logo {
+    width: 120px;
+    border: #C14600 3px solid;
+    border-radius: 100%;
+}
+
+#navbotones {
+    background-color: #C14600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 15px;
+    border-radius: 24px;
 }
 
 .botonesnav {
@@ -29,46 +49,231 @@ ul {
     background-color: #E5D0AC;
     border-radius: 26px;
     transition: 0.2s ease-out;
+    white-space: nowrap;
 }
 
-#logo{
-    width: 120px;
-    border: #C14600 3px solid;
-    border-radius: 100%;
-}
-
-#navbotones{
-    background-color: #C14600;
-    justify-content: center;
-    flex-direction: row;
-    align-items: center;
-    text-align: center;
-    display: flex;
-    gap: 210px;
-    padding: 15px;
-    border-radius: 24px;
-}
-
-.botonesnav:hover{
+.botonesnav:hover {
     background-color: #FF9D23;
     color: #FEF9E1;
     transition: 0.2s ease-in;
 }
 
-/*Perfil*/
-
 .Contenedor {
     display: flex;
-    margin-top: 200px;
+    margin-top: 30px;
+    margin-bottom: 50px;
     flex-direction: column;
     align-items: center;
     text-align: center;
     justify-content: center;
+    padding: 20px;
 }
 
-.user{
+.user {
     background-color: #C14600;
-    padding: 50px;
+    padding: 40px;
     color: #E5D0AC;
     border-radius: 26px;
+    width: 90%;
+    max-width: 450px;
+    box-sizing: border-box;
+}
+
+.user img {
+    width: 100px;
+    height: auto;
+    margin: 10px 0 20px 0;
+}
+
+.user h1 {
+    font-size: 1.8em;
+}
+
+.user h2 {
+    font-size: 1.1em;
+    margin: 10px 0;
+}
+
+/*Gestion de administrador*/
+
+.GesAdmin{
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.Crear, .Editar {
+    background-color: #C14600;
+    display: flex;
+    flex-direction: row;
+    width: 100%; 
+    border-radius: 16px;
+    padding: 16px; 
+    color: #FEF9E1;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    gap: 15px;
+}
+
+input { 
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+#btn {
+    padding: 10px;
+    display: block;
+    width: 90%;
+    max-width: 200px;
+    background-color: #E5D0AC;
+    border-radius: 14px;
+    border: none;
+    font-family: "Roboto Slab", serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    cursor: pointer;
+    transition: 0.2s ease-out;
+    text-align: center;
+}
+
+#btn:hover {
+    background-color: #FF9D23;
+    transition: 0.2s ease-in;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Tabla */
+
+table {
+    width: 100%;
+    max-width: 1000px;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-family: "Roboto Slab", serif;
+    background-color: #FEF9E1;
+    box-shadow: 0 0 10px rgba(193, 70, 0, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 12px 16px;
+    text-align: center;
+    border-bottom: 1px solid #E5D0AC;
+}
+
+table th {
+    background-color: #C14600;
+    color: #FEF9E1;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+table tr:nth-child(even) {
+    background-color: #FFF3D6;
+}
+
+table tr:hover {
+    background-color: #FFE4B5;
+    transition: background-color 0.2s ease-in-out;
+}
+
+table td form {
+    display: inline-block;
+    margin: 0 4px;
+}
+
+table td button {
+    padding: 6px 12px;
+    background-color: #E5D0AC;
+    border: none;
+    border-radius: 10px;
+    font-family: "Roboto Slab", serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-out;
+}
+
+table td button:hover {
+    background-color: #FF9D23;
+    color: #FEF9E1;
+    transition: background-color 0.2s ease-in;
+}
+
+
+/* Media Queries */
+
+@media screen and (max-width: 1024px) {
+    #navbotones {
+        gap: 15px;
+        padding: 10px;
+    }
+    .botonesnav {
+        font-size: 16px;
+        padding: 6px 12px;
+    }
+    #logo {
+        width: 100px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    ul {
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+    #logo {
+        width: 80px;
+        margin-bottom: 15px;
+    }
+
+    #navbotones {
+        width: 95%;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px 5px;
+    }
+
+    .botonesnav {
+        flex-grow: 1;
+        margin: 5px;
+        font-size: 14px;
+    }
+    
+    .Contenedor {
+        margin-top: 50px;
+    }
+
+    .user {
+        padding: 30px;
+        width: 100%;
+    }
+
+    .user h1 {
+        font-size: 1.5em;
+    }
+
+    .user h2 {
+        font-size: 1em;
+    }
 }

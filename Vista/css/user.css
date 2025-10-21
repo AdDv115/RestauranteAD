@@ -1,26 +1,46 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
 
-body{
+body {
     font-family: "Roboto Slab", serif;
     font-optical-sizing: auto;
     font-weight: bold;
     font-style: normal;
     background-color: #FEF9E1;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
- ul {
+nav {
+    width: 100%;
+}
+
+ul {
     list-style-type: none;
-    justify-content: center;
-    flex-direction: row;
-    align-items: center;
-    text-align: center;
     display: flex;
     justify-content: space-between;
-    margin: 0px 50px 0px 50px;
-    text-decoration: none;
+    align-items: center;
+    padding: 10px 20px;
+    margin: 0;
 }
 
- .botonesnav {
+#logo {
+    width: 120px;
+    border: #C14600 3px solid;
+    border-radius: 100%;
+}
+
+#navbotones {
+    background-color: #C14600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px; /* Reducido para pantallas más grandes */
+    padding: 15px;
+    border-radius: 24px;
+}
+
+.botonesnav {
     display: block;
     color: #C14600;
     padding: 8px 16px;
@@ -29,97 +49,143 @@ body{
     background-color: #E5D0AC;
     border-radius: 26px;
     transition: 0.2s ease-out;
+    white-space: nowrap;
 }
 
- #logo{
-    width: 120px;
-    border: #C14600 3px solid;
-    border-radius: 100%;
-}
-
- #navbotones{
-    background-color: #C14600;
-    justify-content: center;
-    flex-direction: row;
-    align-items: center;
-    text-align: center;
-    display: flex;
-    gap: 210px;
-    padding: 15px;
-    border-radius: 24px;
-}
-
-.botonesnav:hover{
+.botonesnav:hover {
     background-color: #FF9D23;
     color: #FEF9E1;
     transition: 0.2s ease-in;
 }
 
-/* Formulario */
-
+/* Contenedor del Formulario */
 .Contenedor {
     display: flex;
-    margin-top: 100px;
+    margin-top: 50px; /* Margen reducido */
+    margin-bottom: 50px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 20px;
 }
 
 form {
     background-color: #C14600;
     display: flex;
     flex-direction: column;
-    width: 250px;
+    width: 90%; 
+    max-width: 350px; 
     border-radius: 26px;
-    height: 450px auto;
-    padding: 15px;
+    height: auto;
+    padding: 25px; 
     color: #FEF9E1;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 label {
-    font-size: 22px;
+    font-size: 20px;
     padding: 8px;
+    margin-top: 10px;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 input { 
-    width: 180px;
-    padding: 8px;
+    width: 100%;
+    padding: 10px;
     border: none;
     border-radius: 16px;
+    box-sizing: border-box;
+    font-size: 16px;
 }
 
 #btn {
-    margin-top: 25px;
-    padding: 6px;
-    display: flex;
-    width: 200px;
+    margin-top: 30px;
+    padding: 10px;
+    display: block;
+    width: 90%;
+    max-width: 200px;
     background-color: #E5D0AC;
-    justify-content: center;
-    display: flex;
     border-radius: 14px;
-    border:none;
+    border: none;
     font-family: "Roboto Slab", serif;
     font-optical-sizing: auto;
     font-weight: bold;
     font-style: normal;
     cursor: pointer;
     transition: 0.2s ease-out;
+    text-align: center;
 }
 
-#btn:hover{
+#btn:hover {
     background-color: #FF9D23;
     transition: 0.2s ease-in;
 }
 
-.text{
+.text {
     background-color: #E5D0AC;
     color: #C14600;
     padding: 15px;
     border-radius: 14px;
+    margin-top: 20px;
+    text-align: center;
 }
 
-a{
+a {
     color: black;
+}
+
+/* Media Queries */
+
+@media screen and (max-width: 1024px) {
+    #navbotones {
+        gap: 15px;
+        padding: 10px;
+    }
+    .botonesnav {
+        font-size: 16px;
+        padding: 6px 12px;
+    }
+    #logo {
+        width: 100px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    ul {
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+    #logo {
+        width: 80px;
+        margin-bottom: 15px;
+    }
+
+    #navbotones {
+        width: 95%;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px 5px;
+    }
+
+    .botonesnav {
+        flex-grow: 1;
+        margin: 5px;
+        font-size: 14px;
+    }
+    
+    .Contenedor {
+        margin-top: 30px;
+        padding: 10px;
+    }
+    
+    form {
+        padding: 20px;
+    }
 }

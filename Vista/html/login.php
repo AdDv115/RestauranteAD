@@ -25,7 +25,7 @@
 
     <h1 class="text">Iniciar Sesion</h1>
 
-    <form action="../../Controlador/usuarioController.php" method="POST">    
+    <form action="../../Controlador/usuarioController.php?action=login" method="POST">    
 
         <label>Email</label>
         <input type="email" name="Email">
