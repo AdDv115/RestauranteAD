@@ -47,19 +47,19 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
     </ul> 
   </nav>
 
-    <div class="Contenedor">
+<div class="Contenedor">
         <div class="user">
             <h1>Bienvenido, <?= htmlspecialchars($usuario['Nombre']) ?>!</h1>
             <img src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png">
             <h2>Email: <?= htmlspecialchars($usuario['Email']) ?></h2>
             <h2>Teléfono: <?= htmlspecialchars($usuario['Telefono']) ?></h2>
             <h2>Rol: <?= htmlspecialchars($usuario['Rolusu']) ?></h2>
-        </div>
+</div>
 
-        <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
+    <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
 
         <div class="GesAdmin">
-            <h1>Gestión de Usuarios</h1>
+            <a class="botonesnav" href="./rplato.php">Gestionar Platos</a> <h1>Gestión de Usuarios</h1>  
 
             <h2 class="Crear">Crear nuevo usuario</h2>
             <!-- Crear usuario -->

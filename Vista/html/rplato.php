@@ -1,103 +1,121 @@
 <?php
+session_start();
+require_once '../../Modelo/usuario.php';
+require_once '../../Modelo/plato.php';
 
-define('ROOT_PATH', dirname(__DIR__, 2) . DIRECTORY_SEPARATOR);
-require_once(ROOT_PATH . 'Modelo/plato.php');
+// Validación de sesión
+if (!isset($_SESSION['usuario_logueado'])) {
+    header("Location: login.php");
+    exit();
+}
 
-$plato = new Plato();
-$platos = $plato -> obtenerPlato();
+$usuario = $_SESSION['usuario_logueado'];
+$platos = $_SESSION['lista_platos'] ?? [];
+
+$platoEditar = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
+    $idEditar = $_POST['editar_id'];
+    foreach ($platos as $p) {
+        if ($p['ID_Plato'] == $idEditar) {
+            $platoEditar = $p;
+            break;
+        }
+    }
+}
+
+// Si es admin y no hay platos en sesión, los cargamos
+if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) {
+    $modelPlato = new Plato();
+    $_SESSION['lista_platos'] = $modelPlato->obtenerPlato();
+    $platos = $_SESSION['lista_platos'];
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar platos</title>
-    <link href="../css/user.css" rel="stylesheet">
-
-  <nav>
-    <ul>
-      <li>  <a href="../index.php"><img src="../img/logo.png" id="logo"></a> </li>
-      <div id="navbotones">
-        <li>  <a class="botonesnav" href="../../index.php">Inicio</a>  </li>
-        <li>  <a class="botonesnav" href="./menu.php">Menu</a>  </li>
-        <li>  <a class="botonesnav" href="./contacto.php">Contacto</a> </li>
-        <li>  <a class="botonesnav" href="./sn.php">Sobre Nosotros</a> </li>
-        <li>  <a class="botonesnav" href="./login.php">Usuario</a> </li>
-      </div>
-    </ul> 
-  </nav>
+    <title>Gestión de Platos</title>
+    <link href="../css/perfil.css" rel="stylesheet">
 </head>
 <body>
+<nav>
+    <ul>
+        <li><a href="../index.php"><img src="../img/logo.png" id="logo"></a></li>
+        <div id="navbotones">
+            <li><a class="botonesnav" href="../../index.php">Inicio</a></li>
+            <li><a class="botonesnav" href="./menu.php">Menu</a></li>
+            <li><a class="botonesnav" href="./contacto.php">Contacto</a></li>
+            <li><a class="botonesnav" href="./sn.php">Sobre Nosotros</a></li>
+            <li><a class="botonesnav" href="./login.php">Usuario</a></li>
+        </div>
+    </ul>
+</nav>
 
 <div class="Contenedor">
 
-    <h1 class="text">Añadir Plato</h1>
+    <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
+    <div class="GesAdmin">
+        <h1>Gestión de Platos</h1>
 
-    <form action="../../Controlador/platoController.php" method="POST" enctype="multipart/form-data">    
+        <h2 class="Crear">Agregar nuevo plato</h2>
+        <form class="Crear" method="POST" action="../../Controlador/platoController.php?action=agregarp" enctype="multipart/form-data">
+            <input type="text" name="NombreP" placeholder="Nombre del Plato" required>
+            <input type="text" name="Descripcion" placeholder="Descripción" required>
+            <input type="number" name="PrecioP" placeholder="Precio" required>
+            <input type="file" name="Imagen" required>
+            <select name="Disponible">
+                <option value="1">Disponible</option>
+                <option value="0">No disponible</option>
+            </select>
+            <button id="btn" type="submit">Agregar Plato</button>
+        </form>
 
-        <label>Nombre del plato</label>
-        <input type="text" name="NombreP">
-
-        <label>Descripcion</label>
-        <input type="text" name="Descripcion">
-
-        <label>Precio del plato</label>
-        <input type="number" name="PrecioP">
-
-        <label>Imagen del Plato</label>
-        <input type="file" name="Imagen">
-
-        <label>Disponible?</label>
-        <select name="Disponible">
-            <option value="Si">Si</option>
-            <option value="No">No</option>
-        </select>
-
-        <button type="submit" id="btn">Agregar Plato</button>
-        
-    </form>
- 
-    <table>
+        <h2 class="Crear">Platos Registrados</h2>
+        <table>
             <tr>
-                <th>ID</th><th>Nombre Del Plato</th><th>Descripcion</th><th>Precio</th><th>Disponible</th><th>Acciones</th>
+                <th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Disponible</th><th>Acciones</th>
             </tr>
-            <?php foreach($platos as $p): ?>
+            <?php foreach ($platos as $p): ?>
             <tr>
-                <td><?= $p['ID_Plato'] ?></td>
-                <td><?= $p['NombrePlato'] ?></td>
-                <td><?= $p['Descripcion'] ?></td>
-                <td><?= $p['Precio'] ?></td>
-                <td><?= $p['Disponible'] ?></td>
+                <td><?= htmlspecialchars($p['ID_Plato']) ?></td>
+                <td><?= htmlspecialchars($p['NombrePlato']) ?></td>
+                <td><?= htmlspecialchars($p['Descripcion']) ?></td>
+                <td>$<?= htmlspecialchars($p['Precio']) ?></td>
+                <td><?= $p['Disponible'] == 1 ? "Disponible" : "No disponible" ?></td>
                 <td>
-                    <!-- Editar -->
-                    <form method="POST" action="../../Controlador/platoController.php" class="inline">
-
-                        <input type="hidden" name="accion" value="Actualizar">
-                        <input type="hidden" name="ID_Plato">
-                        <input type="text" name="NombrePlato">
-                        <input type="email" name="Descripcion">
-
-                        <select name="Disponible">
-                            <option value="Si" <?= $p['Disponible'] == "Si"?"selected":"" ?>>Si</option>
-                            <option value="No" <?= $p['Disponible'] == "No"?"selected":"" ?>>No</option>
-                        </select>
-
-                        <button type="submit">Actualizar</button>
+                    <form method="POST" action="rplato.php">
+                        <input type="hidden" name="editar_id" value="<?= htmlspecialchars($p['ID_Plato']) ?>">
+                        <button id="btn" type="submit">Editar</button>
                     </form>
-
-                    <!-- Eliminar -->
-                    <form method="POST" action="../../controlador/UsuarioController.php" class="inline">
-                        
-                        <input type="hidden" name="accion" value="eliminar">
-                        <input type="hidden" name="id_usuario" value="<?= $p['ID_Plato'] ?>">
-                    
-                        <button type="submit" class="delete">Eliminar</button>
-
+                    <form method="POST" action="../../Controlador/platoController.php?action=eliminarp">
+                        <input type="hidden" name="ID_Plato" value="<?= htmlspecialchars($p['ID_Plato']) ?>">
+                        <button id="btn" type="submit" class="delete">Eliminar</button>
                     </form>
                 </td>
             </tr>
             <?php endforeach; ?>
         </table>
+
+        <?php if ($platoEditar): ?>
+        <div class="form-edicion">
+            <h2 class="Crear">Editando plato: <?= htmlspecialchars($platoEditar['NombrePlato']) ?></h2>
+            <form class="Editar" method="POST" action="../../Controlador/platoController.php?action=actualizarp" enctype="multipart/form-data">
+                <input type="hidden" name="ID_Plato" value="<?= htmlspecialchars($platoEditar['ID_Plato']) ?>">
+                <input type="text" name="NombreP" value="<?= htmlspecialchars($platoEditar['NombrePlato']) ?>" required>
+                <input type="text" name="Descripcion" value="<?= htmlspecialchars($platoEditar['Descripcion']) ?>" required>
+                <input type="number" name="PrecioP" value="<?= htmlspecialchars($platoEditar['Precio']) ?>" required>
+                <input type="file" name="Imagen">
+                <select name="Disponible">
+                    <option value="1" <?= $platoEditar['Disponible'] == 1 ? "selected" : "" ?>>Disponible</option>
+                    <option value="0" <?= $platoEditar['Disponible'] == 0 ? "selected" : "" ?>>No disponible</option>
+                </select>
+                <button id="btn" type="submit">Actualizar</button>
+            </form>
+        </div>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
 </div>
+</body>
 </html>
