@@ -94,6 +94,30 @@ ul {
     margin: 10px 0;
 }
 
+.BotonEditar form {
+    display: flex;
+    justify-content: center;
+}
+
+#btn1 {
+    padding: 10px;
+    display: block;
+    width: 90%;
+    max-width: 200px;
+    background-color: #E5D0AC;
+    border-radius: 14px;
+    border: none;
+    font-family: "Roboto Slab", serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    cursor: pointer;
+    transition: 0.2s ease-out;
+    text-align: center;
+    margin: 0 auto;
+    text-align: center;
+}
+
 /*Gestion de administrador*/
 
 .GesAdmin{

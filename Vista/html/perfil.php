@@ -1,11 +1,24 @@
 <?php
 session_start();
-// Validación de sesión
-
 require_once '../../Modelo/usuario.php';
 
 $usuario = $_SESSION['usuario_logueado'];
 $usuarios = $_SESSION['lista_usuarios'] ?? [];
+
+if (isset($_GET['imagen']) && is_numeric($_GET['imagen'])) {
+    $modelo = new Usuario();
+    $usuarioImagen = $modelo->obtenerUser($_GET['imagen']);
+    if ($usuarioImagen && !empty($usuarioImagen['ImagenPerfil'])) {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->buffer($usuarioImagen['ImagenPerfil']);
+        header("Content-Type: $mime");
+        echo $usuarioImagen['ImagenPerfil'];
+        exit;
+    }
+    header("Content-Type: image/png");
+    readfile("../../img/default-user.png");
+    exit;
+}
 
 $usuarioEditar = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
@@ -18,13 +31,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
     }
 }
 
+$editarPerfil = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editarPerfil'])) {
+    $EP = $_POST['editarPerfil'];
+    foreach ($usuarios as $u) {
+        if ($u['ID_User'] == $EP) {
+            $editarPerfil = $u;
+            break;
+        }
+    }
+}
+
 if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])) {
     $modelUser = new Usuario();
     $_SESSION['lista_usuarios'] = $modelUser->listarUser();
     $usuarios = $_SESSION['lista_usuarios'];
 }
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -49,19 +73,55 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
 
 <div class="Contenedor">
         <div class="user">
-            <h1>Bienvenido, <?= htmlspecialchars($usuario['Nombre']) ?>!</h1>
-            <img src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png">
+            <h1>Bienvenido, <?= htmlspecialchars($usuario['Nombre'])?> <?= htmlspecialchars($usuario['Apellido']) ?>!</h1>
+            <img src="perfil.php?imagen=<?= $usuario['ID_User'] ?>" alt="Foto de perfil">
             <h2>Email: <?= htmlspecialchars($usuario['Email']) ?></h2>
             <h2>Teléfono: <?= htmlspecialchars($usuario['Telefono']) ?></h2>
-            <h2>Rol: <?= htmlspecialchars($usuario['Rolusu']) ?></h2>
-</div>
 
-    <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
+            <!-- Editar perfil -->
+            <div class="BotonEditar">
+                <form method="POST" action="perfil.php">
+                    <input type="hidden" name="editarPerfil" value="<?= htmlspecialchars($usuario['ID_User']) ?>">
+                    <button id="btn1" type="submit">Editar</button>
+                </form>
+            </div>
+
+    </div>
+        
+    <div class="GesPerfil">
+
+            <?php if ($editarPerfil): ?>
+
+            <div class="form-edicion">
+
+            <h2 class="Crear">Editando Perfil: <?= htmlspecialchars($editarPerfil['Nombre']) ?></h2>
+
+                <form class="Editar" method="POST" action="../../Controlador/usuarioController.php?action=editarperfil" enctype="multipart/form-data">
+                
+                <input type="hidden" name="ID_User" value="<?= htmlspecialchars($usuario['ID_User']) ?>">
+                <input type="text" name="Nombre" placeholder="Nombre" value="<?= htmlspecialchars($usuario['Nombre']) ?>" required>
+                <input type="text" name="Apellido" placeholder="Apellido" value="<?= htmlspecialchars($usuario['Apellido']) ?>" required>
+                <input type="password" name="Password" placeholder="Nueva contraseña (opcional)">
+                <input type="text" name="Telefono" placeholder="Telefono" value="<?= htmlspecialchars($usuario['Telefono']) ?>">
+                <input type="file" name="Imagen">
+
+                    <button id="btn" type="submit">Actualizar</button>
+                    
+                </form>
+    </div>
+        <?php endif; ?> 
+
+            <!-- Si es Administrador, Visualizar Gestion Admin -->
+            <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
+            <h2>Rol: <?= htmlspecialchars($usuario['Rolusu']) ?></h2>
+
+    </div>        
 
         <div class="GesAdmin">
             <a class="botonesnav" href="./rplato.php">Gestionar Platos</a> <h1>Gestión de Usuarios</h1>  
 
             <h2 class="Crear">Crear nuevo usuario</h2>
+
             <!-- Crear usuario -->
             <form class="Crear" method="POST" action="../../Controlador/adminController.php?action=registrarA">
                 
@@ -125,11 +185,11 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
                 <form class="Editar" method="POST" action="../../Controlador/adminController.php?action=actualizarA">
                 
                 <input type="hidden" name="ID_User" value="<?= htmlspecialchars($usuarioEditar['ID_User']) ?>">
-                <input type="text" name="Nombre" value="<?= htmlspecialchars($usuarioEditar['Nombre']) ?>" required>
-                <input type="text" name="Apellido" value="<?= htmlspecialchars($usuarioEditar['Apellido']) ?>" required>
-                <input type="email" name="Email" value="<?= htmlspecialchars($usuarioEditar['Email']) ?>" required>
-                <input type="password" name="Password" placeholder="Nueva contraseña (opcional)">
-                <input type="text" name="Telefono" value="<?= htmlspecialchars($usuarioEditar['Telefono']) ?>">
+                <input type="text" name="Nombre" placeholder="Nombre" value="<?= htmlspecialchars($usuarioEditar['Nombre']) ?>" required>
+                <input type="text" name="Apellido" placeholder="Apellido" value="<?= htmlspecialchars($usuarioEditar['Apellido']) ?>" required>
+                <input type="email" name="Email" placeholder="Correo Electronico"  value="<?= htmlspecialchars($usuarioEditar['Email']) ?>" required>
+                <!-- <input type="password" name="Password" placeholder="Nueva contraseña (opcional)"> -->
+                <input type="text" name="Telefono" placeholder="Telefono" value="<?= htmlspecialchars($usuarioEditar['Telefono']) ?>">
                 
                 <select name="Rolusu">
                     <option value="Administrador" <?= $usuarioEditar['Rolusu'] == "Administrador" ? "selected" : "" ?>>Administrador</option>
@@ -144,6 +204,6 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
 
         </div>
         <?php endif; ?>
-    </div>
-</body>
+    
+
 </html>

@@ -52,6 +52,37 @@ class UsuarioController {
         }
     }
 
+    public function editarperfil() {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id = $_POST['ID_User'];
+        $nombre = $_POST['Nombre'];
+        $apellido = $_POST['Apellido'];
+        $pass = $_POST['Password'];
+        $telefono = $_POST['Telefono'];
+
+        $ImagenPerfil = $_FILES['Imagen']['name'] ?? '';
+
+        if (!empty($ImagenPerfil)) {
+            $ruta = __DIR__ . "/../Vista/img/uP/" . basename($ImagenPerfil);
+            move_uploaded_file($_FILES['Imagen']['tmp_name'], $ruta);
+        } else {
+            $uP = $this->modelUser->obtenerUser($id); 
+            $ImagenPerfil = $uP['ImagenPerfil'] ?? '';
+        }
+
+
+        $this->modelUser->EditarP($id, $nombre, $apellido, $pass, $telefono, $ImagenPerfil);
+
+        $usuarioActualizado = $this -> modelUser -> obtenerUser($id);
+
+        session_start();
+        $_SESSION['usuario_logueado'] = $usuarioActualizado;
+
+        header("Location: ../Vista/html/perfil.php");
+        exit();
+    }
+}
+
     public function cerrarSesion() {
         session_start();
         session_destroy();
@@ -73,6 +104,11 @@ if (isset($_GET['action'])) {
         case 'registrar':
             $controller->registrar();
             break;
+
+        case 'editarperfil':
+            $controller->editarperfil();
+            break;  
+            
         case 'cerrarSesion':
             $controller->cerrarSesion();
             break;

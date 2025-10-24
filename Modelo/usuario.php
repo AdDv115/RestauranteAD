@@ -10,16 +10,26 @@ class Usuario {
         $this -> db = DB::connect();
     }
 
-    public function obtenerUser($email) {
-        $sql = "SELECT * FROM usuarios WHERE Email = :Email LIMIT 1";
-        $consul = $this->db->prepare($sql);
-        $consul->execute([":Email" => $email]);
+   public function obtenerUser($id) {
+    $sql = "SELECT * FROM usuarios WHERE ID_User = :ID_User LIMIT 1";
+    $stmt = $this->db->prepare($sql);
+    
+    $stmt->execute([":ID_User" => $id]);
+    
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-        return $consul->fetch();
-    }
+public function obtenerUserPorEmail($email) {
+    $sql = "SELECT * FROM usuarios WHERE Email = :Email LIMIT 1";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([":Email" => $email]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
 
     public function login($email, $pass) {
-        $usuario = $this->obtenerUser($email);
+        $usuario = $this->obtenerUserPorEmail($email);
         if ($usuario && password_verify($pass, $usuario['Passwrd'])) {
             return $usuario;
         } else {
@@ -40,22 +50,41 @@ class Usuario {
         return $consul -> execute([':nombre' => $nombre, ':apellido' => $apellido, ':email' => $email, ':pass' => $hash, ':rolusu' => $rolusu, ':telefono' => $telefono]);
     }
 
-    public function actualizarUser($id, $nombre, $apellido, $email, $nuevaPass = null, $rolusu, $telefono) {
+    public function actualizarUser($id, $nombre, $apellido, $email, $nuevaPass = null, $rolusu, $telefono, $ImagenPerfil) {
     if (!empty($nuevaPass)) {
         $hash = password_hash($nuevaPass, PASSWORD_BCRYPT);
-        $sql = "UPDATE usuarios SET Nombre = :nombre, Apellido = :apellido, Email = :email, Passwrd = :pass, Rolusu = :rolusu, Telefono = :telefono WHERE ID_User = :id";
+        $sql = "UPDATE usuarios SET Nombre = :nombre, Apellido = :apellido, Email = :email, Passwrd = :pass, Rolusu = :rolusu, Telefono = :telefono, ImagenPerfil = :imaperfil WHERE ID_User = :id";
 
         $consul = $this-> db ->prepare($sql);
 
-        return $consul -> execute([':id' => $id, ':nombre' => $nombre, ':apellido' => $apellido, ':email' => $email, ':pass' => $hash, ':rolusu' => $rolusu, ':telefono' => $telefono]);
+        return $consul -> execute([':id' => $id, ':nombre' => $nombre, ':apellido' => $apellido, ':email' => $email, ':pass' => $hash, ':rolusu' => $rolusu, ':telefono' => $telefono, ':imaperfil' => $ImagenPerfil]);
 
     } else {
 
-        $sql = "UPDATE usuarios SET Nombre = :nombre, Apellido = :apellido, Email = :email, Rolusu = :rolusu, Telefono = :telefono WHERE ID_User = :id";
+        $sql = "UPDATE usuarios SET Nombre = :nombre, Apellido = :apellido, Email = :email, Rolusu = :rolusu, Telefono = :telefono, ImagenPerfil = :imaperfil WHERE ID_User = :id";
         $consul = $this -> db ->prepare($sql);
 
-        return $consul -> execute([':id' => $id, ':nombre' => $nombre, ':apellido' => $apellido, ':email' => $email,':rolusu' => $rolusu, ':telefono' => $telefono]);
+        return $consul -> execute([':id' => $id, ':nombre' => $nombre, ':apellido' => $apellido, ':email' => $email,':rolusu' => $rolusu, ':telefono' => $telefono, ':imaperfil' => $ImagenPerfil]);
         }
+    }
+
+    public function EditarP($id, $nombre, $apellido, $nuevaPass = null, $telefono, $ImagenPerfil) {
+    if (!empty($nuevaPass)) {
+        $hash = password_hash($nuevaPass, PASSWORD_BCRYPT);
+        $sql = "UPDATE usuarios SET Nombre = :nombre, Apellido = :apellido, Passwrd = :pass, Telefono = :telefono, ImagenPerfil = :imaperfil WHERE ID_User = :id";
+
+        $consul = $this-> db ->prepare($sql);
+
+        return $consul -> execute([':id' => $id, ':nombre' => $nombre, ':apellido' => $apellido, ':pass' => $hash, ':telefono' => $telefono, ':imaperfil' => $ImagenPerfil]);
+
+    } else {
+
+        $sql = "UPDATE usuarios SET Nombre = :nombre, Apellido = :apellido, Telefono = :telefono, ImagenPerfil = :imaperfil WHERE ID_User = :id";
+        $consul = $this -> db ->prepare($sql);
+
+        return $consul -> execute([':id' => $id, ':nombre' => $nombre, ':apellido' => $apellido, ':telefono' => $telefono, ':imaperfil' => $ImagenPerfil]);
+        }
+
     }
 
   public function eliminarUser($id) {

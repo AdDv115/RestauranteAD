@@ -56,7 +56,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) 
 
     <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
     <div class="GesAdmin">
-        <h1>Gestión de Platos</h1>
+        <a class="botonesnav" href="./perfil.php">Gestionar Usuarios</a><h1>Gestión de Platos</h1>
 
         <h2 class="Crear">Agregar nuevo plato</h2>
         <form class="Crear" method="POST" action="../../Controlador/platoController.php?action=agregarp" enctype="multipart/form-data">
@@ -74,13 +74,14 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) 
         <h2 class="Crear">Platos Registrados</h2>
         <table>
             <tr>
-                <th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Disponible</th><th>Acciones</th>
+                <th>ID</th><th>Nombre</th><th>Descripción</th><th>Imagen</th><th>Precio</th><th>Disponible</th><th>Acciones</th>
             </tr>
             <?php foreach ($platos as $p): ?>
             <tr>
                 <td><?= htmlspecialchars($p['ID_Plato']) ?></td>
                 <td><?= htmlspecialchars($p['NombrePlato']) ?></td>
                 <td><?= htmlspecialchars($p['Descripcion']) ?></td>
+                <td><img src="<?= htmlspecialchars($p['ImagenUrl']) ?>""</td>
                 <td>$<?= htmlspecialchars($p['Precio']) ?></td>
                 <td><?= $p['Disponible'] == 1 ? "Disponible" : "No disponible" ?></td>
                 <td>
