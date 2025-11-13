@@ -8,7 +8,7 @@
 
   <nav>
     <ul>
-      <li>  <a href="../index.php"><img src="../img/logo.png" id="logo"></a> </li>
+      <li>  <a href="../index.php"><img src="../img/Logo.png" id="logo"></a> </li>
       <div id="navbotones">
         <li>  <a class="botonesnav" href="../../index.php">Inicio</a>  </li>
         <li>  <a class="botonesnav" href="./menu.php">Menu</a>  </li>

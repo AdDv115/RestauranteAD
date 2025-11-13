@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once "../Configuracion/conexion.php";
 require_once "../Modelo/usuario.php";
 
@@ -20,14 +22,9 @@ class AdminController {
             $telefono = $_POST['Telefono'];
 
             $this -> modelUser -> crearUser($nombre, $apellido, $email, $pass, $rolusu, $telefono);
-                
-            session_start();
-            
-            if ($_SESSION['usuario_logueado']['Rolusu'] === 'Administrador') {
-                $_SESSION['lista_usuarios'] = $this->modelUser->listarUser();
-            }
 
             header("Location: ../Vista/html/perfil.php");
+            exit();
         }
     }
 
@@ -41,11 +38,9 @@ class AdminController {
         $rolusu = $_POST['Rolusu'];
         $telefono = $_POST['Telefono'];
 
-        $this->modelUser->actualizarUser($id, $nombre, $apellido, $email, $pass, $rolusu, $telefono);
+        $this->modelUser->actualizarUserAD($id, $nombre, $apellido, $email, $pass, $rolusu, $telefono);
 
-        session_start();
-
-        if ($_SESSION['usuario_logueado']['Rolusu'] === 'Administrador') {
+        if (isset($_SESSION['usuario_logueado']) && $_SESSION['usuario_logueado']['Rolusu'] === 'Administrador') {
             $_SESSION['lista_usuarios'] = $this->modelUser->listarUser();
         }
 
@@ -58,10 +53,8 @@ public function eliminarU() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $_POST['ID_User'];
         $this->modelUser->eliminarUser($id);
-
-        session_start();
         
-        if ($_SESSION['usuario_logueado']['Rolusu'] === 'Administrador') {
+        if (isset($_SESSION['usuario_logueado']) && $_SESSION['usuario_logueado']['Rolusu'] === 'Administrador') {
             $_SESSION['lista_usuarios'] = $this->modelUser->listarUser();
         }
 
@@ -71,7 +64,6 @@ public function eliminarU() {
 }
 
     public function cerrarSesion() {
-        session_start();
         session_destroy();
         
         header("Location:../Vista/html/login.php");
@@ -79,7 +71,6 @@ public function eliminarU() {
     }
 }
 
-// Ejecutar el controlador
 $controller = new AdminController();
 
 if (isset($_GET['action'])) {

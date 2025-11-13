@@ -2,23 +2,14 @@
 session_start();
 require_once '../../Modelo/usuario.php';
 
+if (!isset($_SESSION['usuario_logueado'])) {
+
+    header("Location: login.php");
+    exit();
+}
+
 $usuario = $_SESSION['usuario_logueado'];
 $usuarios = $_SESSION['lista_usuarios'] ?? [];
-
-if (isset($_GET['imagen']) && is_numeric($_GET['imagen'])) {
-    $modelo = new Usuario();
-    $usuarioImagen = $modelo->obtenerUser($_GET['imagen']);
-    if ($usuarioImagen && !empty($usuarioImagen['ImagenPerfil'])) {
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $mime = $finfo->buffer($usuarioImagen['ImagenPerfil']);
-        header("Content-Type: $mime");
-        echo $usuarioImagen['ImagenPerfil'];
-        exit;
-    }
-    header("Content-Type: image/png");
-    readfile("../../img/default-user.png");
-    exit;
-}
 
 $usuarioEditar = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
@@ -60,7 +51,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
 <body>
      <nav>
     <ul>
-      <li>  <a href="../index.php"><img src="../img/logo.png" id="logo"></a> </li>
+      <li>  <a href="../index.php"><img src="../img/Logo.png" id="logo"></a> </li>
       <div id="navbotones">
         <li>  <a class="botonesnav" href="../../index.php">Inicio</a>  </li>
         <li>  <a class="botonesnav" href="./menu.php">Menu</a>  </li>
@@ -84,8 +75,12 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
                     <input type="hidden" name="editarPerfil" value="<?= htmlspecialchars($usuario['ID_User']) ?>">
                     <button id="btn1" type="submit">Editar</button>
                 </form>
+                <form method="POST" action="../../Controlador/usuarioController.php?action=cerrarSesion">
+                    <input type="hidden" name="CerrarSesion" value="<?= htmlspecialchars($usuario['ID_User']) ?>">
+                    <button id="btn1" type="submit">Cerrar Sesion</button>
+                </form>
             </div>
-
+    
     </div>
         
     <div class="GesPerfil">
@@ -118,7 +113,9 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
     </div>        
 
         <div class="GesAdmin">
-            <a class="botonesnav" href="./rplato.php">Gestionar Platos</a> <h1>Gestión de Usuarios</h1>  
+            <a class="botonesnav" href="./rplato.php">Gestionar Platos</a> 
+            <a class="botonesnav" href="./reserva.php">Gestionar Reservas</a> 
+            <h1>Gestión de Usuarios</h1>  
 
             <h2 class="Crear">Crear nuevo usuario</h2>
 
@@ -188,7 +185,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
                 <input type="text" name="Nombre" placeholder="Nombre" value="<?= htmlspecialchars($usuarioEditar['Nombre']) ?>" required>
                 <input type="text" name="Apellido" placeholder="Apellido" value="<?= htmlspecialchars($usuarioEditar['Apellido']) ?>" required>
                 <input type="email" name="Email" placeholder="Correo Electronico"  value="<?= htmlspecialchars($usuarioEditar['Email']) ?>" required>
-                <!-- <input type="password" name="Password" placeholder="Nueva contraseña (opcional)"> -->
+                <input type="password" name="Password" placeholder="Nueva contraseña (opcional)">
                 <input type="text" name="Telefono" placeholder="Telefono" value="<?= htmlspecialchars($usuarioEditar['Telefono']) ?>">
                 
                 <select name="Rolusu">

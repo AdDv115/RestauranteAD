@@ -12,7 +12,7 @@ define('ROOT_PATH', __DIR__ . '/');
 
   <nav>
     <ul>
-      <li>  <a href="./index.php"><img src="./Vista/img/logo.png" id="logo"></a> </li>
+      <li>  <a href="./index.php"><img src="./Vista/img/Logo.png" id="logo"></a> </li>
       <div id="navbotones">
         <li>  <a class="botonesnav" href="./Vista/html/menu.php">Menu</a>  </li>
         <li>  <a class="botonesnav" href="./Vista/html/contacto.php">Contacto</a> </li>

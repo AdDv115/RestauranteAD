@@ -68,6 +68,24 @@ public function obtenerUserPorEmail($email) {
         }
     }
 
+    public function actualizarUserAD($id, $nombre, $apellido, $email, $nuevaPass = null, $rolusu, $telefono) {
+    if (!empty($nuevaPass)) {
+        $hash = password_hash($nuevaPass, PASSWORD_BCRYPT);
+        $sql = "UPDATE usuarios SET Nombre = :nombre, Apellido = :apellido, Email = :email, Passwrd = :pass, Rolusu = :rolusu, Telefono = :telefono WHERE ID_User = :id";
+
+        $consul = $this-> db ->prepare($sql);
+
+        return $consul -> execute([':id' => $id, ':nombre' => $nombre, ':apellido' => $apellido, ':email' => $email, ':pass' => $hash, ':rolusu' => $rolusu, ':telefono' => $telefono]);
+
+    } else {
+
+        $sql = "UPDATE usuarios SET Nombre = :nombre, Apellido = :apellido, Email = :email, Rolusu = :rolusu, Telefono = :telefono WHERE ID_User = :id";
+        $consul = $this -> db ->prepare($sql);
+
+        return $consul -> execute([':id' => $id, ':nombre' => $nombre, ':apellido' => $apellido, ':email' => $email,':rolusu' => $rolusu, ':telefono' => $telefono]);
+        }
+    }
+
     public function EditarP($id, $nombre, $apellido, $nuevaPass = null, $telefono, $ImagenPerfil) {
     if (!empty($nuevaPass)) {
         $hash = password_hash($nuevaPass, PASSWORD_BCRYPT);

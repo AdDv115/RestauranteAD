@@ -41,7 +41,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) 
 <body>
 <nav>
     <ul>
-        <li><a href="../index.php"><img src="../img/logo.png" id="logo"></a></li>
+        <li><a href="../index.php"><img src="../img/Logo.png" id="logo"></a></li>
         <div id="navbotones">
             <li><a class="botonesnav" href="../../index.php">Inicio</a></li>
             <li><a class="botonesnav" href="./menu.php">Menu</a></li>
@@ -56,7 +56,9 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) 
 
     <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
     <div class="GesAdmin">
-        <a class="botonesnav" href="./perfil.php">Gestionar Usuarios</a><h1>Gestión de Platos</h1>
+        <a class="botonesnav" href="./perfil.php">Gestionar Usuarios</a>
+        <a class="botonesnav" href="./reserva.php">Gestionar Reservas</a>
+        <h1>Gestión de Platos</h1>
 
         <h2 class="Crear">Agregar nuevo plato</h2>
         <form class="Crear" method="POST" action="../../Controlador/platoController.php?action=agregarp" enctype="multipart/form-data">
