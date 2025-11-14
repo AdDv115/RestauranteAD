@@ -38,6 +38,8 @@
         <label>Telefono</label>
         <input type="tel" name="Telefono">
 
+        <input hidden name="rol" value="Cliente">
+
         <label>Contraseña</label>
         <input type="password" name="Password">
 

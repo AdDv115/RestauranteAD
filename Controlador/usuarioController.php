@@ -1,6 +1,6 @@
 <?php
 require_once "../Configuracion/conexion.php";
-require_once "../Modelo/usuario.php";
+require_once "../Modelo/ModeloUsuarios.php";
 
 class UsuarioController {
 

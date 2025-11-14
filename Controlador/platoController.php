@@ -1,7 +1,7 @@
 <?php
 require_once "../Configuracion/conexion.php";
 define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
-require_once(ROOT_PATH . 'Modelo/plato.php');
+require_once(ROOT_PATH . 'Modelo/ModeloPlatos.php');
 
 class PlatoController {
     private $modelplato;

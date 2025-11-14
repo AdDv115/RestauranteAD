@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once '../../Modelo/usuario.php';
-require_once '../../Modelo/plato.php';
+require_once '../../Modelo/ModeloUsuarios.php';
+require_once '../../Modelo/ModeloPlatos.php';
 
 // Validación de sesión
 if (!isset($_SESSION['usuario_logueado'])) {
@@ -55,9 +55,14 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) 
 <div class="Contenedor">
 
     <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
-    <div class="GesAdmin">
+
+    <div id="opciones">
         <a class="botonesnav" href="./perfil.php">Gestionar Usuarios</a>
-        <a class="botonesnav" href="./reserva.php">Gestionar Reservas</a>
+        <a class="botonesnav" href="./mesas.php">Gestionar Mesas</a>
+    </div>
+
+    <div class="GesAdmin">
+        
         <h1>Gestión de Platos</h1>
 
         <h2 class="Crear">Agregar nuevo plato</h2>

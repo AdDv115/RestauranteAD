@@ -3,13 +3,13 @@ session_start();
 
 require_once "../Configuracion/conexion.php";
 define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
-require_once(ROOT_PATH . 'Modelo/reserva.php');
+require_once(ROOT_PATH . 'Modelo/ModeloMesas.php');
 
-class ReservaController {
-    private $modelreserva;
+class MesaController {
+    private $modelmesas;
 
     public function __construct() {
-        $this->modelreserva = new Reserva();
+        $this->modelmesas = new Mesas();
     }
 
     public function RegistrarMesas() {
@@ -19,11 +19,11 @@ class ReservaController {
             $Ubicacion = $_POST['UB'];
             $Disponibilidad = intval($_POST['DP'] ?? 0);
 
-            $this -> modelreserva ->RegistrarMesas($NumeroMesa, $Capacidad, $Ubicacion, $Disponibilidad);
+            $this -> modelmesas ->RegistrarMesas($NumeroMesa, $Capacidad, $Ubicacion, $Disponibilidad);
 
-            $_SESSION['lista_mesas'] = $this->modelreserva->obtenerMesas();
+            $_SESSION['lista_mesas'] = $this->modelmesas->obtenerMesas();
 
-            header("Location: ../Vista/html/reserva.php");
+            header("Location: ../Vista/html/mesas.php");
             exit();
         }
     }
@@ -36,11 +36,11 @@ class ReservaController {
             $Ubicacion = $_POST['UB'];
             $Disponibilidad = intval($_POST['DP']);
 
-            $this -> modelreserva -> actualizarMesas($id, $NumeroMesa, $Capacidad,$Ubicacion, $Disponibilidad);
+            $this -> modelmesas -> actualizarMesas($id, $NumeroMesa, $Capacidad,$Ubicacion, $Disponibilidad);
 
-            $_SESSION['lista_mesas'] = $this->modelreserva->obtenerMesas();
+            $_SESSION['lista_mesas'] = $this->modelmesas->obtenerMesas();
 
-            header("Location: ../Vista/html/reserva.php");
+            header("Location: ../Vista/html/mesas.php");
             exit();
          }
         }
@@ -48,17 +48,17 @@ class ReservaController {
     public function eliminarMesa() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['ID_R'];
-            $this -> modelreserva -> eliminarMesa($id);
+            $this -> modelmesas -> eliminarMesa($id);
 
-            $_SESSION['lista_mesas'] = $this->modelreserva->obtenerMesas();
+            $_SESSION['lista_mesas'] = $this->modelmesas    ->obtenerMesas();
 
-            header("Location: ../Vista/html/reserva.php");
+            header("Location: ../Vista/html/mesas.php");
             exit();
         }
     }
 }
 
-$controller = new ReservaController();
+$controller = new MesaController();
 
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
@@ -72,11 +72,11 @@ if (isset($_GET['action'])) {
             $controller->eliminarMesa();
             break;
         default:
-            header("Location: ../Vista/html/reserva.php");
+            header("Location: ../Vista/html/mesas.php");
             exit();
     }
 } else {
-    header("Location: ../Vista/html/reserva.php");
+    header("Location: ../Vista/html/mesas.php");
     exit();
 }
 ?>

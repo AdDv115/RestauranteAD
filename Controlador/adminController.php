@@ -2,7 +2,7 @@
 session_start();
 
 require_once "../Configuracion/conexion.php";
-require_once "../Modelo/usuario.php";
+require_once "../Modelo/ModeloUsuarios.php";
 
 class AdminController {
 
@@ -66,7 +66,7 @@ public function eliminarU() {
     public function cerrarSesion() {
         session_destroy();
         
-        header("Location:../Vista/html/login.php");
+        header("Location: ../Vista/html/login.php");
         exit();
     }
 }

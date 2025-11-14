@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once '../../Modelo/usuario.php';
-require_once '../../Modelo/reserva.php';
+require_once '../../Modelo/ModeloUsuarios.php';
+require_once '../../Modelo/ModeloMesas.php';
 
 if (!isset($_SESSION['usuario_logueado'])) {
     header("Location: login.php");
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
 }
 
 if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_mesas'])) {
-    $modelreserva = new Reserva();
+    $modelreserva = new Mesas();
     $_SESSION['lista_mesas'] = $modelreserva->obtenerMesas();
     $mesas = $_SESSION['lista_mesas'];
 }
@@ -33,7 +33,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_mesas'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Reservas</title>
+    <title>Gestión de Mesas</title>
     <link href="../css/perfil.css" rel="stylesheet">
 </head>
 <body>
@@ -53,10 +53,15 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_mesas'])) {
 <div class="Contenedor">
 
     <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
-    <div class="GesAdmin">
+
+    <div id="opciones">
         <a class="botonesnav" href="./perfil.php">Gestionar Usuarios</a>
         <a class="botonesnav" href="./rplato.php">Gestionar Platos</a>
-        <h1>Gestión de Mesas (Reservas)</h1>
+    </div>
+
+    <div class="GesAdmin">
+        
+        <h1>Gestión de Mesas</h1>
 
         <h2 class="Crear">Registrar Mesa</h2>
         <form class="Crear" method="POST" action="../../Controlador/ReservaController.php?action=RegistrarR">

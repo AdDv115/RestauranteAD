@@ -1,14 +1,21 @@
 <?php
 session_start();
-require_once '../../Modelo/usuario.php';
+$fecha_minima = date('Y-m-d');
+require_once '../../Modelo/ModeloUsuarios.php';
 
 if (!isset($_SESSION['usuario_logueado'])) {
-
     header("Location: login.php");
     exit();
 }
 
 $usuario = $_SESSION['usuario_logueado'];
+$usuarios = [];
+
+if ($usuario['Rolusu'] === 'Administrador') {
+    $modelUser = new Usuario();
+    $_SESSION['lista_usuarios'] = $modelUser->listarUser();
+}
+
 $usuarios = $_SESSION['lista_usuarios'] ?? [];
 
 $usuarioEditar = null;
@@ -25,21 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
 $editarPerfil = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editarPerfil'])) {
     $EP = $_POST['editarPerfil'];
-    foreach ($usuarios as $u) {
-        if ($u['ID_User'] == $EP) {
-            $editarPerfil = $u;
-            break;
-        }
+    if ($usuario['ID_User'] == $EP) {
+        $editarPerfil = $usuario;
     }
 }
-
-if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])) {
-    $modelUser = new Usuario();
-    $_SESSION['lista_usuarios'] = $modelUser->listarUser();
-    $usuarios = $_SESSION['lista_usuarios'];
-}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -82,7 +79,40 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
             </div>
     
     </div>
+
+    <?php if ($usuario['Rolusu'] === 'Cliente'): ?>
         
+    <div class="FReserva">
+
+        <h1 class="text">Reserva</h1>
+
+        <form class="Reserva" action="../../Controlador/mesaController.php?action=login" method="POST">    
+
+        <label>Fecha de Reserva</label>
+        <input type="date" name="FR" required min="<?= $fecha_minima ?>"">
+
+        <label>Hora de Reserva</label>
+        <input type="time" name="TR" required min="13:00" max="22:00">
+
+        <label>Numero de Personas</label>
+        <select name="NP">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select>
+        
+        <button type="submit" id="btn">Realizar Reserva</button>
+        
+    </form>
+    </div>
+
+<?php endif; ?> 
+
     <div class="GesPerfil">
 
             <?php if ($editarPerfil): ?>
@@ -104,6 +134,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
                     
                 </form>
     </div>
+    
         <?php endif; ?> 
 
             <!-- Si es Administrador, Visualizar Gestion Admin -->
@@ -112,9 +143,13 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
 
     </div>        
 
+            <div id="opciones">
+                <a class="botonesnav" href="./rplato.php">Gestionar Platos</a> 
+                <a class="botonesnav" href="./mesas.php">Gestionar Mesas</a>
+            </div>
+
         <div class="GesAdmin">
-            <a class="botonesnav" href="./rplato.php">Gestionar Platos</a> 
-            <a class="botonesnav" href="./reserva.php">Gestionar Reservas</a> 
+
             <h1>Gestión de Usuarios</h1>  
 
             <h2 class="Crear">Crear nuevo usuario</h2>
@@ -152,8 +187,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
                     <td><?= htmlspecialchars($u['Apellido']) ?></td>
                     <td><?= htmlspecialchars($u['Email']) ?></td>
                     <td><?= htmlspecialchars($u['Rolusu']) ?></td>
-                    <td><?= htmlspecialchars($u['Telefono']) ?></td>
-                    
+                    <td><?= htmlspecialchars($u['Telefono']) ?></td> 
                     <td>
                         <!-- Editar -->
                         <form method="POST" action="perfil.php">
@@ -162,7 +196,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_usuarios'])
                         </form>
 
                         <!-- Eliminar -->
-                        <form method="POST" action="../../controlador/adminController.php?action=eliminarA">
+                        <form method="POST" action="../../Controlador/adminController.php?action=eliminarA">
 
                             <input type="hidden" name="ID_User" value="<?= htmlspecialchars($u['ID_User']) ?>">
                             <button id="btn" type="submit" class="delete">Eliminar</button>
