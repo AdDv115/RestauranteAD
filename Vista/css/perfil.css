@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
 
+*{
+    text-decoration: none;
+    text-decoration-line: none;
+}
+
 body {
     font-family: "Roboto Slab", serif;
     font-optical-sizing: auto;
@@ -100,6 +105,8 @@ ul {
     display: flex;
     justify-content: center;
     gap: 15px;
+    text-decoration: none;
+    color: black;
 }
 
 #btn1 {
@@ -120,6 +127,33 @@ ul {
     margin: 0 auto;
     text-align: center;
 }
+
+#fp {
+    border-radius: 100%;
+}
+
+#fpp {
+    width: 45px;
+    border-radius: 100%;
+}
+
+#form-edicion-perfil, #form-edicion-admin {
+            scroll-margin-top: 20px;
+        }
+        .alerta-php {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            border-radius: .25rem;
+            text-align: center;
+        }
+        .alerta-php.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
 
 /*Gestion de administrador*/
 

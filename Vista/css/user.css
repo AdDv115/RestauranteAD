@@ -138,6 +138,24 @@ a {
     color: black;
 }
 
+.alerta-php {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            border-radius: .25rem;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            margin: 20px auto 0 auto;
+        }
+        .alerta-php.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
 /* Media Queries */
 
 @media screen and (max-width: 1024px) {
