@@ -12,17 +12,20 @@ class PlatoController {
 
     public function AgregarPlato() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            session_start();
+            
             $NombrePlato = $_POST['NombreP'];
             $Descripcion = $_POST['Descripcion'];
             $Precio = $_POST['PrecioP'];
             $ImagenUrl = $_FILES['Imagen']['name'];
-            $ruta = __DIR__ . "/../Vista/img/platos/" . basename($ImagenUrl);
-            move_uploaded_file($_FILES['Imagen']['tmp_name'], $ruta);
-            $Disponible = intval($_POST['Disponible']);
+            
+            $ruta_destino = dirname(__DIR__) . "/Vista/img/platos/" . basename($ImagenUrl);
+            
+            if (move_uploaded_file($_FILES['Imagen']['tmp_name'], $ruta_destino)) {
+                $Disponible = intval($_POST['Disponible']);
+                $this->modelplato->AgregarPlato($NombrePlato, $Descripcion, $Precio, $ImagenUrl, $Disponible);
+            }
 
-            $this->modelplato->AgregarPlato($NombrePlato, $Descripcion, $Precio, $ImagenUrl, $Disponible);
-
-            session_start();
             $_SESSION['lista_platos'] = $this->modelplato->obtenerPlato();
 
             header("Location: ../Vista/html/rplato.php");
@@ -32,6 +35,7 @@ class PlatoController {
 
     public function actualizarPlato() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            session_start();
             $id = $_POST['ID_Plato'];
             $NombrePlato = $_POST['NombreP'];
             $Descripcion = $_POST['Descripcion'];
@@ -39,17 +43,23 @@ class PlatoController {
             $Disponible = intval($_POST['Disponible']);
 
             $ImagenUrl = $_FILES['Imagen']['name'] ?? '';
-            if (!empty($ImagenUrl)) {
-                $ruta = __DIR__ . "/../Vista/img/platos/" . basename($ImagenUrl);
-                move_uploaded_file($_FILES['Imagen']['tmp_name'], $ruta);
+            $actualizacion_exitosa = true;
+
+            if (!empty($ImagenUrl) && $_FILES['Imagen']['error'] == UPLOAD_ERR_OK) {
+                // Corrección de la ruta en actualizarPlato
+                $ruta_destino = dirname(__DIR__) . "/Vista/img/platos/" . basename($ImagenUrl);
+                if (!move_uploaded_file($_FILES['Imagen']['tmp_name'], $ruta_destino)) {
+                     $actualizacion_exitosa = false;
+                }
             } else {
                 $plato = $this->modelplato->obtenerPlatoPorId($id);
-                $ImagenUrl = $plato['ImagenUrl'];
+                $ImagenUrl = $plato['ImagenUrl'] ?? '';
             }
 
-            $this->modelplato->actualizarPlato($id, $NombrePlato, $Descripcion, $Precio, $ImagenUrl, $Disponible);
+            if ($actualizacion_exitosa) {
+                $this->modelplato->actualizarPlato($id, $NombrePlato, $Descripcion, $Precio, $ImagenUrl, $Disponible);
+            }
 
-            session_start();
             $_SESSION['lista_platos'] = $this->modelplato->obtenerPlato();
 
             header("Location: ../Vista/html/rplato.php");
@@ -59,10 +69,10 @@ class PlatoController {
 
     public function eliminarPlato() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            session_start();
             $id = $_POST['ID_Plato'];
             $this->modelplato->eliminaPlato($id);
 
-            session_start();
             $_SESSION['lista_platos'] = $this->modelplato->obtenerPlato();
 
             header("Location: ../Vista/html/rplato.php");

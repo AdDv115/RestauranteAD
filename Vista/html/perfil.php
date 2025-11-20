@@ -1,10 +1,6 @@
 <?php
 session_start();
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 $fecha_minima = date('Y-m-d');
 
 require_once '../../Modelo/ModeloUsuarios.php';
@@ -67,12 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editarPerfil'])) {
 <body>
      <nav>
     <ul>
-      <li>  <a href="../index.php"><img src="../img/Logo.png" id="logo"></a> </li>
+      <li>  <a href="../../index.php"><img src="../img/Logo.png" id="logo"></a> </li>
       <div id="navbotones">
         <li>  <a href="./perfil.php"><img id="fpp" src="../img/uP/<?= htmlspecialchars($usuario['ImagenPerfil'] ?? 'default.png') ?>" alt="Foto de perfil"></a> </li>
         <li>  <a class="botonesnav" href="./menu.php">Menu</a>  </li>
-        <li>  <a class="botonesnav" href="./contacto.php">Contacto</a> </li>
-        <li>  <a class="botonesnav" href="./sn.php">Sobre Nosotros</a> </li>
         <li>  <a class="botonesnav" href="../../Controlador/usuarioController.php?action=cerrarSesion">Cerrar Sesion</a> </li>
       </div>
     </ul> 
@@ -100,28 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editarPerfil'])) {
 
 <div class="GesPerfil">
 
-    <?php if (isset($_SESSION['mensaje'])): ?>
-        <?php 
-            $mensaje = $_SESSION['mensaje'];
-            $mensaje_lower = strtolower($mensaje);
-            
-            if (strpos($mensaje_lower, 'error') !== false || 
-                strpos($mensaje_lower, 'incorrecto') !== false || 
-                strpos($mensaje_lower, 'falló') !== false ||
-                strpos($mensaje_lower, 'no existe') !== false) 
-            {
-                $clase_alerta = '';
-            } else {
-                $clase_alerta = 'success';
-            }
-            
-            unset($_SESSION['mensaje']);
-        ?>
-        <div class="alerta-php <?= $clase_alerta ?>">
-            <p><?= htmlspecialchars($mensaje) ?></p>
-        </div>
-    <?php endif; ?>
-
             <?php if ($editarPerfil): ?>
 
             <div class="form-edicion" id="form-edicion-perfil">
@@ -143,6 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editarPerfil'])) {
     </div>
     
 <?php endif; ?> 
+
+
 
     <?php if ($usuario['Rolusu'] === 'Cliente'): ?>
         
@@ -182,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editarPerfil'])) {
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Personas</th>
-                <th>Mesa</th>
+                <th>Mesa</th>I'] ?? 'defa
                 <th>Acciones</th>
             </tr>
             <?php foreach($reservas as $r): ?>

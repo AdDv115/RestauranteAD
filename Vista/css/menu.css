@@ -46,6 +46,11 @@ ul {
     justify-content: center;
 }
 
+#fpp {
+    width: 45px;
+    border-radius: 100%;
+}
+
 .botonesnav:hover {
     background-color: #FF9D23;
     color: #FEF9E1;
@@ -69,7 +74,6 @@ ul {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
-    width: 100%;
     max-width: 1200px;
 }
 
@@ -79,8 +83,9 @@ ul {
     flex-direction: column;
     align-items: center;
     background-color: #C14600;
-    padding: 15px;
+    padding: 5px;
     border-radius: 16px;
+    background-color: #E5D0AC   ;
 }
 
 .fotos {
@@ -93,9 +98,7 @@ ul {
 .text {
     background-color: #E5D0AC;
     color: #C14600;
-    padding: 10px;
     border-radius: 14px;
-    margin-top: 10px;
 }
 
 /* 📱 Responsive */

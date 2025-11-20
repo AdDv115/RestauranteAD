@@ -3,7 +3,6 @@ session_start();
 require_once '../../Modelo/ModeloUsuarios.php';
 require_once '../../Modelo/ModeloPlatos.php';
 
-// Validación de sesión
 if (!isset($_SESSION['usuario_logueado'])) {
     header("Location: login.php");
     exit();
@@ -11,6 +10,13 @@ if (!isset($_SESSION['usuario_logueado'])) {
 
 $usuario = $_SESSION['usuario_logueado'];
 $platos = $_SESSION['lista_platos'] ?? [];
+
+$modelPlato = new Plato();
+
+if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) {
+    $_SESSION['lista_platos'] = $modelPlato->obtenerPlato();
+    $platos = $_SESSION['lista_platos'];
+}
 
 $platoEditar = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
@@ -22,13 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
         }
     }
 }
-
-// Si es admin y no hay platos en sesión, los cargamos
-if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) {
-    $modelPlato = new Plato();
-    $_SESSION['lista_platos'] = $modelPlato->obtenerPlato();
-    $platos = $_SESSION['lista_platos'];
-}
 ?>
 
 <!DOCTYPE html>
@@ -37,17 +36,18 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) 
     <meta charset="UTF-8">
     <title>Gestión de Platos</title>
     <link href="../css/perfil.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <nav>
     <ul>
-        <li><a href="../index.php"><img src="../img/Logo.png" id="logo"></a></li>
+        <li><a href="../index.php"><img src="../img/Logo.png" id="logo" alt="Logo"></a></li>
         <div id="navbotones">
             <li><a class="botonesnav" href="../../index.php">Inicio</a></li>
             <li><a class="botonesnav" href="./menu.php">Menu</a></li>
             <li><a class="botonesnav" href="./contacto.php">Contacto</a></li>
             <li><a class="botonesnav" href="./sn.php">Sobre Nosotros</a></li>
-            <li><a class="botonesnav" href="./login.php">Usuario</a></li>
+            <li><a class="botonesnav" href="../../Controlador/usuarioController.php?action=cerrarSesion">Cerrar Sesion</a></li>
         </div>
     </ul>
 </nav>
@@ -88,7 +88,11 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) 
                 <td><?= htmlspecialchars($p['ID_Plato']) ?></td>
                 <td><?= htmlspecialchars($p['NombrePlato']) ?></td>
                 <td><?= htmlspecialchars($p['Descripcion']) ?></td>
-                <td><img src="<?= htmlspecialchars($p['ImagenUrl']) ?>""</td>
+                <td>
+                    <img style="width: 50px; height: 50px; object-fit: cover;" 
+                         src="../img/platos/<?= htmlspecialchars($p['ImagenUrl'] ?? 'default.png')?>" 
+                         alt="Foto del plato">
+                </td>
                 <td>$<?= htmlspecialchars($p['Precio']) ?></td>
                 <td><?= $p['Disponible'] == 1 ? "Disponible" : "No disponible" ?></td>
                 <td>
@@ -106,7 +110,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) 
         </table>
 
         <?php if ($platoEditar): ?>
-        <div class="form-edicion">
+        <div class="form-edicion" id="formularioEdicionPlato">
             <h2 class="Crear">Editando plato: <?= htmlspecialchars($platoEditar['NombrePlato']) ?></h2>
             <form class="Editar" method="POST" action="../../Controlador/platoController.php?action=actualizarp" enctype="multipart/form-data">
                 <input type="hidden" name="ID_Plato" value="<?= htmlspecialchars($platoEditar['ID_Plato']) ?>">
@@ -125,5 +129,26 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_platos'])) 
     </div>
     <?php endif; ?>
 </div>
+
+<script>
+$(document).ready(function() {
+    
+    <?php if ($platoEditar): ?>
+        $('html, body').animate({
+            scrollTop: $('#formularioEdicionPlato').offset().top - 50 
+        }, 800);
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['edicion_plato_exitosa'])): ?>
+        
+        $('#formularioEdicionPlato').fadeOut(1000, function() {
+            alert('¡Plato actualizado con éxito!'); 
+        });
+        
+        <?php unset($_SESSION['edicion_plato_exitosa']); ?>
+        
+    <?php endif; ?>
+});
+</script>
 </body>
 </html>
