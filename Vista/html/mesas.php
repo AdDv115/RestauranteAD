@@ -37,26 +37,63 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_mesas'])) {
     <link href="../css/perfil.css" rel="stylesheet">
 </head>
 <body>
-<nav>
-    <ul>
-        <li><a href="../index.php"><img src="../img/Logo.png" id="logo"></a></li>
-        <div id="navbotones">
-            <li><a class="botonesnav" href="../../index.php">Inicio</a></li>
-            <li><a class="botonesnav" href="./menu.php">Menu</a></li>
-            <li><a class="botonesnav" href="./contacto.php">Contacto</a></li>
-            <li><a class="botonesnav" href="./sn.php">Sobre Nosotros</a></li>
-            <li><a class="botonesnav" href="./login.php">Usuario</a></li>
-        </div>
-    </ul>
-</nav>
+<?php if ($usuario): ?>
+    <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
+        <!-- NAV ADMIN -->
+        <nav>
+            <ul>
+                <li>
+                    <a href="../../index.php">
+                        <img src="../img/Logo.png" id="logo" alt="Logo">
+                    </a>
+                </li>
+                <div id="navbotones">
+                    <li>
+                        <a href="./perfil.php">
+                            <img id="fpp" src="../img/uP/<?= htmlspecialchars($usuario['ImagenPerfil'] ?? 'default.png') ?>" alt="Foto de perfil">
+                        </a>
+                    </li>
+                    <li><a class="botonesnav" href="./menu.php">Menu</a></li>
+                    <li><a class="botonesnav" href="../../Controlador/usuarioController.php?action=cerrarSesion">Cerrar Sesion</a></li>
+                </div>
+            </ul>
+        </nav>
+    <?php else: ?>
+        <!-- NAV CLIENTE -->
+        <nav>
+            <ul>
+                <li>
+                    <a href="../../index.php">
+                        <img src="../img/Logo.png" id="logo" alt="Logo">
+                    </a>
+                </li>
+                <div id="navbotones">
+                    <li>
+                        <a href="./perfil.php">
+                            <img id="fpp" src="../img/uP/<?= htmlspecialchars($usuario['ImagenPerfil'] ?? 'default.png') ?>" alt="Foto de perfil">
+                        </a>
+                    </li>
+                    <li><a class="botonesnav" href="./pedidos.php">Mis pedidos</a></li>
+                    <li><a class="botonesnav" href="./reservas.php">Mis reservas</a></li>
+                    <li><a class="botonesnav" href="./reservas.php">Mis Domicilios</a></li>
+                    <li><a class="botonesnav" href="./menu.php">Menu</a></li>
+                    <li><a class="botonesnav" href="../../Controlador/usuarioController.php?action=cerrarSesion">Cerrar Sesion</a></li>
+                </div>
+            </ul>
+        </nav>
+    <?php endif; ?>
+<?php endif; ?>
 
 <div class="Contenedor">
 
     <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
 
-    <div id="opciones">
+     <div id="opciones">
         <a class="botonesnav" href="./perfil.php">Gestionar Usuarios</a>
         <a class="botonesnav" href="./rplato.php">Gestionar Platos</a>
+        <a class="botonesnav" href="./pedidos.php">Gestionar Pedidos</a>
+        <a class="botonesnav" href="./reservas.php">Gestionar Reservas</a>
+        <a class="botonesnav" href="./domicilios.php">Gestionar Domicilios</a>
     </div>
 
     <div class="GesAdmin">

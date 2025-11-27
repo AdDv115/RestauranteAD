@@ -101,6 +101,20 @@ ul {
     border-radius: 14px;
 }
 
+#btn1 {
+    
+    background-color: #C14600;
+    border-radius: 14px;
+    border: none;
+    font-family: "Roboto Slab", serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    cursor: pointer;
+    transition: 0.2s ease-out;
+    text-align: center;
+}
+
 /* 📱 Responsive */
 @media (max-width: 768px) {
     ul {

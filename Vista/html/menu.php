@@ -4,11 +4,14 @@ session_start();
 require_once '../../Modelo/ModeloPlatos.php';
 require_once '../../Configuracion/conexion.php';
 
+if (!isset($_SESSION['carrito'])) {
+    $_SESSION['carrito'] = [];
+}
+
 $modelPlato = new Plato();
+$platos_disponibles = $modelPlato->obtenerPlato() ?? [];
 
-$platos_disponibles = $modelPlato->obtenerPlato();
-
-$usuario = $_SESSION['usuario_logueado'];
+$usuario = $_SESSION['usuario_logueado'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -30,6 +33,9 @@ $usuario = $_SESSION['usuario_logueado'];
                             <img id="fpp" src="../img/uP/<?= htmlspecialchars($usuario['ImagenPerfil'] ?? 'default.png') ?>" alt="Foto de perfil">
                         </a>
                     </li>
+                    <li><a class="botonesnav" href="./pedidos.php">Mis Pedidos</a></li>
+                    <li><a class="botonesnav" href="./reservas.php">Mis Reservas</a></li>
+                    <li><a class="botonesnav" href="./domicilios.php">Mis Domicilios</a></li>
                     <li><a class="botonesnav" href="./menu.php">Menu</a></li>
                     <li><a class="botonesnav" href="../../Controlador/usuarioController.php?action=cerrarSesion">Cerrar Sesion</a></li>
                 </div>
@@ -50,6 +56,12 @@ $usuario = $_SESSION['usuario_logueado'];
 
     <div class="Contenedor">
 
+        <?php if ($usuario && !empty($_SESSION['carrito'])): ?>
+            <div style="text-align: center; margin: 20px 0;">
+                <a class="botonesnav" href="./pedidos.php">Finalizar pedido</a>
+            </div>
+        <?php endif; ?>
+
         <div class="Galeria">
 
             <?php if (!empty($platos_disponibles)): ?>
@@ -61,6 +73,16 @@ $usuario = $_SESSION['usuario_logueado'];
                         <h3 class="text"><?= htmlspecialchars($plato['NombrePlato']) ?></h3>
                         <p class="precio">$<?= htmlspecialchars(number_format($plato['Precio'], 0, ',', '.')) ?></p>
                         <p class="descripcion"><?= htmlspecialchars($plato['Descripcion']) ?></p>
+
+                        <?php if ($usuario): ?>
+                            <form action="../../Controlador/PedidoController.php?action=addToCart" method="POST" style="margin-top: 10px;">
+                                <input type="hidden" name="id_plato" value="<?= htmlspecialchars($plato['ID_Plato']) ?>">
+                                <input type="number" name="cantidad" value="1" min="1" required style="width: 50px; text-align: center;">
+                                <button type="submit" id="btn1">
+                                    Añadir al Pedido
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>

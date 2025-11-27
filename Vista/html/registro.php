@@ -11,10 +11,7 @@
       <li>  <a href="../index.php"><img src="../img/Logo.png" id="logo"></a> </li>
       <div id="navbotones">
         <li>  <a class="botonesnav" href="../../index.php">Inicio</a>  </li>
-        <li>  <a class="botonesnav" href="./menu.php">Menu</a>  </li>
-        <li>  <a class="botonesnav" href="./contacto.php">Contacto</a> </li>
-        <li>  <a class="botonesnav" href="./sn.php">Sobre Nosotros</a> </li>
-        <li>  <a class="botonesnav" href="./login.php">Usuario</a> </li>
+        
       </div>
     </ul> 
   </nav>

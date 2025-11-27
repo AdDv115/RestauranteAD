@@ -1,5 +1,7 @@
 <?php
-define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+}
 require_once(ROOT_PATH . 'Configuracion/conexion.php');
 
 class Plato {
@@ -47,4 +49,3 @@ class Plato {
         return $stmt->execute([$id]);
     }
 }
-?>

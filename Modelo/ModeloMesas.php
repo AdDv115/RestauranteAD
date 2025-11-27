@@ -1,5 +1,8 @@
 <?php
-define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+}
 require_once(ROOT_PATH . 'Configuracion/conexion.php');
 
 class Mesas {
@@ -20,6 +23,12 @@ class Mesas {
 
         $res->execute();
     }
+    
+    public function obtenerMesasDisponibles() {
+        $sql = "SELECT ID_R, NumeroMesa FROM mesas WHERE Disponibilidad = 1";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function obtenerMesas() {
         $sql = "SELECT * FROM mesas";
@@ -35,7 +44,7 @@ class Mesas {
     }
 
     public function actualizarMesas($id, $NumeroMesa, $Capacidad, $Ubicacion, $Disponibilidad) {
-        $sql = "UPDATE mesas SET NumeroMesa=?, Capacidad=?, Ubicacion=?, Disponibilidad=?  WHERE ID_R=?";
+        $sql = "UPDATE mesas SET NumeroMesa=?, Capacidad=?, Ubicacion=?, Disponibilidad=? WHERE ID_R=?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$NumeroMesa, $Capacidad, $Ubicacion, $Disponibilidad,$id]);
     }
@@ -46,4 +55,3 @@ class Mesas {
         return $stmt->execute([$id]);
     }
 }
-?>

@@ -1,5 +1,8 @@
 <?php
 
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+}
 require_once __DIR__ . "/../Configuracion/conexion.php";
 
 class Usuario {
