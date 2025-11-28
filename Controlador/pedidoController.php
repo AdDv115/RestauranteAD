@@ -3,8 +3,8 @@ session_start();
 
 require_once "../Configuracion/conexion.php";
 define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
-require_once(ROOT_PATH . 'Modelo/ModeloPedidos.php');
-require_once(ROOT_PATH . 'Modelo/ModeloPlatos.php');
+require_once ROOT_PATH . 'Modelo/ModeloPedidos.php';
+require_once ROOT_PATH . 'Modelo/ModeloPlatos.php';
 
 class PedidoController {
     private $modelPedidos;
@@ -88,52 +88,52 @@ class PedidoController {
     }
 
     public function actualizarPedido() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = intval($_POST['ID_P'] ?? 0);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id = intval($_POST['ID_P'] ?? 0);
 
-            $NumeroPedido   = $_POST['NumeroPedido'] ?? '';
-            $FechaPedido    = $_POST['FechaPedido'] ?? '';
-            $CantidadPlatos = intval($_POST['CantidadPlatos'] ?? 0);
-            $ID_Plato       = intval($_POST['ID_Plato'] ?? 0);
-            $ID_User        = intval($_POST['ID_User'] ?? 0);
-            $ID_Mesa        = intval($_POST['ID_Mesa'] ?? 0);
-            $Estado         = $_POST['Estado'] ?? 'Pendiente';
+        $NumeroPedido   = $_POST['NumeroPedido'] ?? '';
+        $FechaPedido    = $_POST['FechaPedido'] ?? '';
+        $CantidadPlatos = intval($_POST['CantidadPlatos'] ?? 0);
+        $ID_Plato       = intval($_POST['ID_Plato'] ?? 0);
+        $ID_User        = intval($_POST['ID_User'] ?? 0);
+        $ID_Mesa        = intval($_POST['ID_Mesa'] ?? 0);
+        $Estado         = $_POST['Estado'] ?? 'Pendiente';
 
-            if ($FechaPedido !== '') {
-                $FechaPedido = str_replace('T', ' ', $FechaPedido);
-            }
-
-            if (
-                $id > 0 &&
-                $NumeroPedido !== '' &&
-                $FechaPedido !== '' &&
-                $CantidadPlatos > 0 &&
-                $ID_Plato > 0 &&
-                $ID_User > 0 &&
-                $ID_Mesa > 0
-            ) {
-                if ($this->modelPedidos->mesaOcupadaEnFecha($ID_Mesa, $FechaPedido)) {
-                    $_SESSION['error_pedido'] = 'La mesa ya tiene un pedido para esa fecha.';
-                    header("Location: ../Vista/html/pedidos.php");
-                    exit();
-                }
-
-                $this->modelPedidos->actualizarPedidos(
-                    $id,
-                    $NumeroPedido,
-                    $FechaPedido,
-                    $CantidadPlatos,
-                    $ID_Plato,
-                    $ID_User,
-                    $ID_Mesa,
-                    $Estado
-                );
-            }
-
-            header("Location: ../Vista/html/pedidos.php");
-            exit();
+        if ($FechaPedido !== '') {
+            $FechaPedido = str_replace('T', ' ', $FechaPedido);
         }
+
+        if (
+            $id > 0 &&
+            $NumeroPedido !== '' &&
+            $FechaPedido !== '' &&
+            $CantidadPlatos > 0 &&
+            $ID_Plato > 0 &&
+            $ID_User > 0 &&
+            $ID_Mesa > 0
+        ) {
+            if ($this->modelPedidos->mesaOcupadaEnFecha($ID_Mesa, $FechaPedido)) {
+                $_SESSION['error_pedido'] = 'La mesa ya tiene un pedido para esa fecha.';
+                header("Location: ../Vista/html/pedidos.php");
+                exit();
+            }
+
+            $this->modelPedidos->actualizarPedidos(
+                $id,
+                $NumeroPedido,
+                $FechaPedido,
+                $CantidadPlatos,
+                $ID_Plato,
+                $ID_User,
+                $ID_Mesa,
+                $Estado
+            );
+        }
+
+        header("Location: ../Vista/html/pedidos.php");
+        exit();
     }
+}
 
     public function addToCart() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

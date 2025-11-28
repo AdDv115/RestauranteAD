@@ -3,6 +3,7 @@ session_start();
 require_once '../../Modelo/ModeloDomicilios.php';
 require_once '../../Modelo/ModeloUsuarios.php';
 require_once '../../Modelo/ModeloPedidos.php';
+require_once '../../Modelo/ModeloPlatos.php';
 
 if (!isset($_SESSION['usuario_logueado'])) {
     header("Location: login.php");
@@ -14,11 +15,13 @@ $esAdmin = ($usuario['Rolusu'] ?? '') === 'Administrador';
 
 $modelDomicilios = new Domicilios();
 $modelPedidos = new Pedidos();
+$modelPlatos = new Plato();
 
 $domicilios = [];
 $misPedidos = [];
 $misPedidosAgrupados = [];
 $domiciliosPorPedido = [];
+$platos = $modelPlatos->obtenerPlato() ?? [];
 
 if ($esAdmin) {
     $domicilios = $modelDomicilios->obtenerDomicilios() ?? [];
@@ -45,7 +48,6 @@ if ($esAdmin) {
 </head>
 <body>
     <?php if ($esAdmin): ?>
-        <!-- NAV ADMIN -->
         <nav>
             <ul>
                 <li>
@@ -59,13 +61,11 @@ if ($esAdmin) {
                             <img id="fpp" src="../img/uP/<?= htmlspecialchars($usuario['ImagenPerfil'] ?? 'default.png') ?>" alt="Foto de perfil">
                         </a>
                     </li>
-            
                     <li><a class="botonesnav" href="../../Controlador/usuarioController.php?action=cerrarSesion">Cerrar Sesion</a></li>
                 </div>
             </ul>
         </nav>
     <?php else: ?>
-        <!-- NAV CLIENTE -->
         <nav>
             <ul>
                 <li>
@@ -91,6 +91,15 @@ if ($esAdmin) {
 
     <div class="Contenedor">
         <?php if ($esAdmin): ?>
+
+            <div id="opciones">
+            <a class="botonesnav" href="./perfil.php">Gestionar Usuarios</a>
+            <a class="botonesnav" href="./rplato.php">Gestionar Platos</a>
+            <a class="botonesnav" href="./mesas.php">Gestionar Mesas</a>
+            <a class="botonesnav" href="./pedidos.php">Gestionar Pedidos</a>
+            <a class="botonesnav" href="./reservas.php">Gestionar Reservas</a>
+        </div>
+
             <div class="GesAdmin">
                 <h1>Gestion de Domicilios</h1>
                 <h2 class="Crear">Pedidos con entrega a domicilio</h2>
@@ -98,6 +107,7 @@ if ($esAdmin) {
                 <table>
                     <tr>
                         <th>N° Pedido</th>
+                        <th>Plato</th>
                         <th>Fecha</th>
                         <th>Cliente</th>
                         <th>Direccion de entrega</th>
@@ -108,6 +118,7 @@ if ($esAdmin) {
                     <?php foreach ($domicilios as $d): ?>
                     <tr>
                         <td><?= htmlspecialchars($d['NumeroPedido'] ?? $d['ID_Pedido'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($platos['NombrePlato'] ?? '') ?></td>
                         <td><?= htmlspecialchars($d['FechaPedido'] ?? '') ?></td>
                         <td><?= htmlspecialchars(trim(($d['Nombre'] ?? '') . ' ' . ($d['Apellido'] ?? ''))) ?></td>
                         <td>
@@ -153,6 +164,7 @@ if ($esAdmin) {
                     <table>
                         <tr>
                             <th>N° Pedido</th>
+                            <th>Plato</th>
                             <th>Fecha</th>
                             <th>Mesa</th>
                             <th>Estado Pedido</th>
@@ -167,6 +179,7 @@ if ($esAdmin) {
                         <tr>
                             <td><?= htmlspecialchars($numPedido) ?></td>
                             <td><?= htmlspecialchars($p['FechaPedido']) ?></td>
+                            <td><?= htmlspecialchars($p['NombrePlato'] ?? '') ?></td>
                             <td><?= htmlspecialchars($p['NumeroMesa'] ?? 'N/A') ?></td>
                             <td><?= htmlspecialchars($p['Estado'] ?? 'Pendiente') ?></td>
                             <td><?= htmlspecialchars($dom['DireccionEntrega'] ?? 'No asignada') ?></td>

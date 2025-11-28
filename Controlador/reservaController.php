@@ -1,11 +1,16 @@
 <?php
 session_start();
 
-define('PROJECT_ROOT', '/Resad/'); 
+if (!defined('PROJECT_ROOT')) {
+    define('PROJECT_ROOT', '/Resad/');
+}
 
-require_once "../Configuracion/conexion.php";
-define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
-require_once(ROOT_PATH . 'Modelo/ModeloReservas.php');
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+}
+
+require_once ROOT_PATH . 'Configuracion/conexion.php';
+require_once ROOT_PATH . 'Modelo/ModeloReservas.php';
 
 class ReservaController {
     private $modelreservas;
@@ -16,13 +21,12 @@ class ReservaController {
 
     public function RegistrarReservas() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-            $NumeroPersonas = $_POST['NP'];
-            $FechaReserva = $_POST['FR'];
-            $HoraReserva = $_POST['HR'];
-            
+            $NumeroPersonas = $_POST['NP'] ?? null;
+            $FechaReserva = $_POST['FR'] ?? null;
+            $HoraReserva = $_POST['HR'] ?? null;
+            $Estado = $_POST['Estado'] ?? 'Pendiente';
             $ID_User = $_SESSION['usuario_logueado']['ID_User'] ?? null;
-            
+
             if (empty($ID_User)) {
                 header("Location:" . PROJECT_ROOT . "Vista/html/login.php?error=notlogged");
                 exit();
@@ -32,50 +36,52 @@ class ReservaController {
 
             if ($ID_Mesa_Disponible) {
                 $this->modelreservas->RegistrarReservas(
-                    $NumeroPersonas, 
-                    $FechaReserva, 
-                    $HoraReserva, 
+                    $NumeroPersonas,
+                    $FechaReserva,
+                    $HoraReserva,
+                    $Estado,
                     $ID_User,
                     $ID_Mesa_Disponible
                 );
-                
-                $_SESSION['reserva_msg'] = '¡Reserva realizada y mesa asignada!';
+
+                $_SESSION['lista_reserva'] = $this->modelreservas->obtenerReservas();
+
+                header("Location:" . PROJECT_ROOT . "Vista/html/reservas.php");
+                exit();
             } else {
-                $_SESSION['reserva_msg'] = 'Lo sentimos, no hay mesas disponibles para esa hora o número de personas.';
+                header("Location:" . PROJECT_ROOT . "Vista/html/reservas.php?error=sin_mesa");
+                exit();
             }
-
-            $_SESSION['lista_reserva'] = $this-> modelreservas -> obtenerReservas();
-
-            header("Location:" . PROJECT_ROOT . "Vista/html/perfil.php");
-            exit();
         }
     }
 
     public function actualizarReservas() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['ID_R'];
-            $NumeroPersonas = $_POST['NP'];
-            $FechaReserva = $_POST['FR'];
-            $HoraReserva = $_POST['HR'];
-            $ID_M = intval($_POST['ID_M']); 
+            $id = $_POST['ID_R'] ?? null;
+            $NumeroPersonas = $_POST['NP'] ?? null;
+            $FechaReserva = $_POST['FR'] ?? null;
+            $HoraReserva = $_POST['HR'] ?? null;
+            $Estado = $_POST['Estado'] ?? null;
+            $ID_M = intval($_POST['ID_M'] ?? 0);
 
-            $this -> modelreservas -> actualizarReservas($id, $NumeroPersonas, $FechaReserva, $HoraReserva, $ID_M);
+            $this->modelreservas->actualizarReservas($id, $NumeroPersonas, $FechaReserva, $HoraReserva, $Estado, $ID_M);
 
-            $_SESSION['lista_reserva'] = $this->modelreservas->obtenerReservas(); 
+            $_SESSION['lista_reserva'] = $this->modelreservas->obtenerReservas();
 
-            header("Location:" . PROJECT_ROOT . "Vista/html/perfil.php");
+            header("Location:" . PROJECT_ROOT . "Vista/html/reservas.php");
             exit();
-         }
         }
+    }
 
     public function eliminarReservas() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['ID_R'];
-            $this -> modelreservas -> eliminarReservas($id);
+            $id = $_POST['ID_R'] ?? null;
 
-            $_SESSION['lista_reserva'] = $this->modelreservas    ->obtenerReservas();
+            $this->modelreservas->eliminarReservas($id);
 
-            header("Location:" . PROJECT_ROOT . "Vista/html/perfil.php");
+            $_SESSION['lista_reserva'] = $this->modelreservas->obtenerReservas();
+
+            header("Location:" . PROJECT_ROOT . "Vista/html/reservas.php");
             exit();
         }
     }
@@ -83,8 +89,10 @@ class ReservaController {
 
 $controller = new ReservaController();
 
-if (isset($_GET['action'])) {
-    switch ($_GET['action']) {
+$action = $_GET['action'] ?? null;
+
+if ($action) {
+    switch ($action) {
         case 'RegistrarR':
             $controller->RegistrarReservas();
             break;
@@ -95,10 +103,10 @@ if (isset($_GET['action'])) {
             $controller->eliminarReservas();
             break;
         default:
-            header("Location:" . PROJECT_ROOT . "Vista/html/perfil.php");
+            header("Location:" . PROJECT_ROOT . "Vista/html/reservas.php");
             exit();
     }
 } else {
-    header("Location:" . PROJECT_ROOT . "Vista/html/perfil.php");
+    header("Location:" . PROJECT_ROOT . "Vista/html/reservas.php");
     exit();
 }

@@ -26,9 +26,8 @@ class UsuarioController {
 
                 header("Location:" . PROJECT_ROOT . "Vista/html/perfil.php");
                 exit();
-
             } else {
-                header("Location:" . PROJECT_ROOT . "Vista/html/login.php?error=credenciales_invalidas");
+                header("Location:" . PROJECT_ROOT . "Vista/html/login.php?msg=error");
                 exit();
             }
         } else {
@@ -37,8 +36,8 @@ class UsuarioController {
         }
     }
 
-    public function registrar(){
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    public function registrar() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nombre = $_POST['Nombre'];
             $apellido = $_POST['Apellido'];
             $email = $_POST['Email'];
@@ -48,6 +47,9 @@ class UsuarioController {
 
             $this->modelUser->crearUser($nombre, $apellido, $email, $pass, $rolusu, $telefono);
                 
+            header("Location: " . PROJECT_ROOT . "Vista/html/login.php?msg=ok");
+            exit();
+        } else {
             header("Location: " . PROJECT_ROOT . "Vista/html/login.php");
             exit();
         }
@@ -67,7 +69,6 @@ class UsuarioController {
             $ImagenPerfil = $imagenActual;
 
             if (isset($_FILES['Imagen']) && $_FILES['Imagen']['error'] === UPLOAD_ERR_OK) {
-                
                 $carpeta_destino = __DIR__ . "/../Vista/img/uP/";
                 $nombre_archivo = basename($_FILES["Imagen"]["name"]);
                 $ext = pathinfo($nombre_archivo, PATHINFO_EXTENSION);
@@ -90,6 +91,9 @@ class UsuarioController {
             $_SESSION['usuario_logueado'] = $usuarioActualizado;
 
             header("Location: " . PROJECT_ROOT . "Vista/html/perfil.php");
+            exit();
+        } else {
+            header("Location: " . PROJECT_ROOT . "Vista/html/login.php");
             exit();
         }
     }
@@ -114,17 +118,14 @@ if (isset($_GET['action'])) {
         case 'registrar':
             $controller->registrar();
             break;
-
         case 'editarperfil':
             $controller->editarperfil();
             break;  
-            
         case 'cerrarSesion':
             $controller->cerrarSesion();
             break;
         default:
-        
-            header("Location:" . PROJECT_ROOT . "Vista/html/login.php");
+            header("Location:" . PROJECT_ROOT . "Vista/html/login.php?msg=error");
             exit();
     }
 } else {

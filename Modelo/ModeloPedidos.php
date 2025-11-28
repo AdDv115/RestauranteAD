@@ -25,7 +25,7 @@ class Pedidos {
         $res->bindParam(":estado", $Estado); 
         $res->execute();
     }
-    
+
     public function obtenerPedidosPorUsuario($id_user) {
         $sql = "SELECT 
                     r.ID_P, 
@@ -35,12 +35,9 @@ class Pedidos {
                     r.CantidadPlatos,
                     m.NumeroMesa,
                     p.NombrePlato
-                FROM 
-                    pedidos r
-                LEFT JOIN 
-                    mesas m ON r.ID_Mesa = m.ID_R 
-                LEFT JOIN 
-                    platos p ON r.ID_Plato = p.ID_Plato
+                FROM pedidos r
+                LEFT JOIN mesas m ON r.ID_Mesa = m.ID_R 
+                LEFT JOIN platos p ON r.ID_Plato = p.ID_Plato
                 WHERE r.ID_User = ?";
                     
         $stmt = $this->db->prepare($sql);
@@ -57,14 +54,10 @@ class Pedidos {
                     p.NombrePlato,
                     p.Precio,
                     p.ImagenUrl
-                FROM 
-                    pedidos r
-                JOIN 
-                    platos p ON r.ID_Plato = p.ID_Plato
-                JOIN 
-                    mesas m ON r.ID_Mesa = m.ID_R
-                JOIN
-                    usuarios u ON r.ID_User = u.ID_User";
+                FROM pedidos r
+                JOIN platos p ON r.ID_Plato = p.ID_Plato
+                JOIN mesas m ON r.ID_Mesa = m.ID_R
+                JOIN usuarios u ON r.ID_User = u.ID_User";
                     
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -78,31 +71,31 @@ class Pedidos {
     }
 
     public function actualizarPedidos($id, $NumeroPedido, $FechaPedido, $CantidadPlatos, $ID_Plato, $ID_User, $ID_Mesa, $Estado) {
-        $sql = "UPDATE pedidos SET 
-                    NumeroPedido=?, 
-                    FechaPedido=?, 
-                    CantidadPlatos=?, 
-                    ID_Plato=?, 
-                    ID_User=?, 
-                    ID_Mesa=?, 
-                    Estado=? 
-                WHERE ID_P=?";
-                
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            $NumeroPedido, 
-            $FechaPedido, 
-            $CantidadPlatos, 
-            $ID_Plato, 
-            $ID_User, 
-            $ID_Mesa, 
-            $Estado,
-            $id
-        ]);
-    }
+    $sql = "UPDATE pedidos SET 
+                NumeroPedido = ?, 
+                FechaPedido = ?, 
+                CantidadPlatos = ?, 
+                ID_Plato = ?, 
+                ID_User = ?, 
+                ID_Mesa = ?,   
+                Estado = ?
+            WHERE ID_P = ?";
+            
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([
+        $NumeroPedido, 
+        $FechaPedido, 
+        $CantidadPlatos, 
+        $ID_Plato, 
+        $ID_User, 
+        $ID_Mesa, 
+        $Estado,
+        $id
+    ]);
+}
 
     public function eliminarPedidos($id) {
-        $sql = "DELETE FROM pedidos WHERE ID_P=?";
+        $sql = "DELETE FROM pedidos WHERE ID_P = ?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$id]);
     }

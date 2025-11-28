@@ -64,8 +64,13 @@ $usuario = $_SESSION['usuario_logueado'] ?? null;
 
         <div class="Galeria">
 
-            <?php if (!empty($platos_disponibles)): ?>
-                <?php foreach ($platos_disponibles as $plato): ?>
+    <?php if (!empty($platos_disponibles)): ?>
+        <?php 
+            $hayDisponibles = false;
+                foreach ($platos_disponibles as $plato): if ((int)$plato['Disponible'] !== 1) { continue; }
+                        $hayDisponibles = true;
+                        ?>
+                        
                     <div class="item">
                         <img class="fotos" 
                              src="../img/platos/<?= htmlspecialchars($plato['ImagenUrl'] ?? 'default.jpg') ?>" 
@@ -75,9 +80,9 @@ $usuario = $_SESSION['usuario_logueado'] ?? null;
                         <p class="descripcion"><?= htmlspecialchars($plato['Descripcion']) ?></p>
 
                         <?php if ($usuario): ?>
-                            <form action="../../Controlador/PedidoController.php?action=addToCart" method="POST" style="margin-top: 10px;">
+                            <form action="../../Controlador/PedidoController.php?action=addToCart" method="POST">
                                 <input type="hidden" name="id_plato" value="<?= htmlspecialchars($plato['ID_Plato']) ?>">
-                                <input type="number" name="cantidad" value="1" min="1" required style="width: 50px; text-align: center;">
+                                <input type="number" name="cantidad" value="1" min="1" max="8" required>
                                 <button type="submit" id="btn1">
                                     Añadir al Pedido
                                 </button>

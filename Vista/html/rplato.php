@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
                 <td><?= htmlspecialchars($p['NombrePlato']) ?></td>
                 <td><?= htmlspecialchars($p['Descripcion']) ?></td>
                 <td>
-                    <img style="width: 50px; height: 50px; object-fit: cover;" 
+                    <img" 
                          src="../img/platos/<?= htmlspecialchars($p['ImagenUrl'] ?? 'default.png')?>" 
                          alt="Foto del plato">
                 </td>

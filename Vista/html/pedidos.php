@@ -1,9 +1,9 @@
 <?php
 session_start();
 require_once '../../Modelo/ModeloUsuarios.php';
-require_once '../../Modelo/ModeloPedidos.php'; 
-require_once '../../Modelo/ModeloPlatos.php'; 
-require_once '../../Modelo/ModeloMesas.php'; 
+require_once '../../Modelo/ModeloPedidos.php';
+require_once '../../Modelo/ModeloPlatos.php';
+require_once '../../Modelo/ModeloMesas.php';
 
 if (!isset($_SESSION['usuario_logueado'])) {
     header("Location: login.php");
@@ -13,9 +13,9 @@ if (!isset($_SESSION['usuario_logueado'])) {
 $usuario = $_SESSION['usuario_logueado'];
 $modelPedidos = new Pedidos();
 $modelPlatos = new Plato();
-$modelMesas = new Mesas(); 
+$modelMesas = new Mesas();
 
-$platos = $modelPlatos->obtenerPlato() ?? []; 
+$platos = $modelPlatos->obtenerPlato() ?? [];
 $mesasDisponibles = $modelMesas->obtenerMesasDisponibles() ?? [];
 
 $misPedidos = $modelPedidos->obtenerPedidosPorUsuario($usuario['ID_User']) ?? [];
@@ -61,12 +61,11 @@ foreach ($pedidosAdmin as $p) {
 <head>
     <meta charset="UTF-8">
     <title>Pedidos</title>
-    <link href="../css/pedidos.css" rel="stylesheet"> 
+    <link href="../css/pedidos.css" rel="stylesheet">
 </head>
 <body>
 <?php if ($usuario): ?>
     <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
-        <!-- NAV ADMIN -->
         <nav>
             <ul>
                 <li>
@@ -86,7 +85,6 @@ foreach ($pedidosAdmin as $p) {
             </ul>
         </nav>
     <?php else: ?>
-        <!-- NAV CLIENTE -->
         <nav>
             <ul>
                 <li>
@@ -185,6 +183,7 @@ foreach ($pedidosAdmin as $p) {
                 <tr>
                     <th>N° Pedido</th>
                     <th>Fecha</th>
+                    <th>Plato</th>
                     <th>Mesa</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -193,10 +192,10 @@ foreach ($pedidosAdmin as $p) {
                 <tr>
                     <td><?= htmlspecialchars($numPedido) ?></td>
                     <td><?= htmlspecialchars($p['FechaPedido']) ?></td>
+                    <td><?= htmlspecialchars($p['NombrePlato']) ?></td>
                     <td><?= htmlspecialchars($p['NumeroMesa'] ?? 'N/A') ?></td>
                     <td><?= htmlspecialchars($p['Estado'] ?? 'Pendiente') ?></td>
                     <td>
-
                         <a class="botonesnav" href="./domicilios.php">Ir a domicilios</a>
                         <form method="POST" action="../../Controlador/pedidoController.php?action=EliminarP" style="display: inline;">
                             <input type="hidden" name="ID_P" value="<?= htmlspecialchars($p['ID_P']) ?>">
@@ -229,6 +228,7 @@ foreach ($pedidosAdmin as $p) {
             <tr>
                 <th>N° Pedido</th>
                 <th>Fecha</th>
+                <th>Plato</th>
                 <th>Mesa</th>
                 <th>Cliente</th>
                 <th>Estado</th>
@@ -238,6 +238,7 @@ foreach ($pedidosAdmin as $p) {
             <tr>
                 <td><?= htmlspecialchars($numPedido) ?></td>
                 <td><?= htmlspecialchars($p['FechaPedido']) ?></td>
+                <td><?= htmlspecialchars($p['NombrePlato']) ?></td>
                 <td><?= htmlspecialchars($p['NumeroMesa'] ?? 'N/A') ?></td>
                 <td><?= htmlspecialchars(trim(($p['Nombre'] ?? '') . ' ' . ($p['Apellido'] ?? ''))) ?></td>
                 <td><?= htmlspecialchars($p['Estado'] ?? 'Pendiente') ?></td>
@@ -269,28 +270,29 @@ foreach ($pedidosAdmin as $p) {
             
             <form class="Editar" method="POST" action="../../Controlador/pedidoController.php?action=ActualizarP">
                 <input type="hidden" name="ID_P" value="<?= htmlspecialchars($PeEditar['ID_P']) ?>">
+                <input type="hidden" name="ID_Plato" value="<?= htmlspecialchars($PeEditar['ID_Plato']) ?>">
+                <input type="hidden" name="NumeroPedido" value="<?= htmlspecialchars($PeEditar['NumeroPedido']) ?>">
 
                 <label>ID Cliente</label>
-                <input type="number" name="ID_User" placeholder="ID Cliente" value="<?= htmlspecialchars($PeEditar['ID_User']) ?>" required>
-                
+                <input type="number" name="ID_User" value="<?= htmlspecialchars($PeEditar['ID_User']) ?>" required>
+            
                 <label>ID Mesa</label>
-                <input type="number" name="ID_Mesa" placeholder="ID Mesa" value="<?= htmlspecialchars($PeEditar['ID_Mesa']) ?>" required>
-                
+                <input type="number" name="ID_Mesa" value="<?= htmlspecialchars($PeEditar['ID_Mesa']) ?>" required>
+            
                 <label>Fecha Pedido</label>
-                <input type="datetime-local" name="FechaPedido" value="<?= htmlspecialchars(date('Y-m-d\TH:i:s', strtotime($PeEditar['FechaPedido']))) ?>" required>
+                <input type="datetime-local" name="FechaPedido" 
+                    value="<?= htmlspecialchars(date('Y-m-d\TH:i:s', strtotime($PeEditar['FechaPedido']))) ?>" required>
 
-                <label>Cantidad (de esta línea)</label>
-                <input type="number" name="CantidadPlatos" placeholder="Cantidad" value="<?= htmlspecialchars($PeEditar['CantidadPlatos'] ?? 1) ?>" required min="1">
-                
+                <label>Cantidad</label>
+                <input type="number" name="CantidadPlatos" value="<?= htmlspecialchars($PeEditar['CantidadPlatos']) ?>" required min="1">
+
                 <label>Estado</label>
                 <select name="Estado">
-                    <option value="Pendiente" <?= ($PeEditar['Estado'] ?? 'Pendiente') == "Pendiente" ? "selected" : "" ?>>Pendiente</option>
-                    <option value="En Preparacion" <?= ($PeEditar['Estado'] ?? '') == "En Preparacion" ? "selected" : "" ?>>En Preparación</option>
-                    <option value="Servido" <?= ($PeEditar['Estado'] ?? '') == "Servido" ? "selected" : "" ?>>Servido</option>
-                    <option value="Cancelado" <?= ($PeEditar['Estado'] ?? '') == "Cancelado" ? "selected" : "" ?>>Cancelado</option>
+                    <option value="Pendiente"      <?= $PeEditar['Estado'] == "Pendiente" ? "selected" : "" ?>>Pendiente</option>
+                    <option value="En Preparacion" <?= $PeEditar['Estado'] == "En Preparacion" ? "selected" : "" ?>>En Preparación</option>
+                    <option value="Servido"        <?= $PeEditar['Estado'] == "Servido" ? "selected" : "" ?>>Servido</option>
+                    <option value="Cancelado"      <?= $PeEditar['Estado'] == "Cancelado" ? "selected" : "" ?>>Cancelado</option>
                 </select>
-                
-                <input type="hidden" name="NumeroPedido" value="<?= htmlspecialchars($PeEditar['NumeroPedido'] ?? 'N/A') ?>">
 
                 <button id="btn" type="submit" style="margin-top: 15px;">Actualizar</button>
             </form>

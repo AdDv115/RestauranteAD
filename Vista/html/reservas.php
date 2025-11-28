@@ -15,12 +15,14 @@ $usuario = $_SESSION['usuario_logueado'];
 $modelUser = new Usuario();
 $modelReservas = new Reservas();
 
-$reservas = [];
+$reservas = $modelReservas->obtenerReservas();
 
-if ($usuario['Rolusu'] === 'Administrador') {
-    $reservas = $modelReservas->obtenerReservas();
-} else {
-    $reservas = $modelReservas->obtenerReservas();
+$ReEditar = null;
+if (isset($_GET['editar'])) {
+    $idEditar = intval($_GET['editar']);
+    if ($idEditar > 0) {
+        $ReEditar = $modelReservas->obtenerReservasPorId($idEditar);
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -31,9 +33,9 @@ if ($usuario['Rolusu'] === 'Administrador') {
     <link href="../css/perfil.css" rel="stylesheet">
 </head>
 <body>
+
 <?php if ($usuario): ?>
     <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
-        <!-- NAV ADMIN -->
         <nav>
             <ul>
                 <li>
@@ -48,13 +50,11 @@ if ($usuario['Rolusu'] === 'Administrador') {
                         </a>
                     </li>
                     <li><a class="botonesnav" href="./menu.php">Menu</a></li>
-        
                     <li><a class="botonesnav" href="../../Controlador/usuarioController.php?action=cerrarSesion">Cerrar Sesion</a></li>
                 </div>
             </ul>
         </nav>
     <?php else: ?>
-        <!-- NAV CLIENTE -->
         <nav>
             <ul>
                 <li>
@@ -117,6 +117,7 @@ if ($usuario['Rolusu'] === 'Administrador') {
                     <th>Hora</th>
                     <th>Personas</th>
                     <th>Mesa</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
                 <?php foreach ($reservas as $r): ?>
@@ -126,6 +127,7 @@ if ($usuario['Rolusu'] === 'Administrador') {
                             <td><?= htmlspecialchars($r['HoraReserva']) ?></td>
                             <td><?= htmlspecialchars($r['NumeroPersonas']) ?></td>
                             <td><?= htmlspecialchars($r['NumeroMesa']) ?></td>
+                            <td><?= htmlspecialchars($r['Estado']) ?></td>
                             <td>
                                 <form method="POST" action="../../Controlador/reservaController.php?action=EliminarR" style="display: inline;">
                                     <input type="hidden" name="ID_R" value="<?= htmlspecialchars($r['ID_RE']) ?>">
@@ -142,13 +144,46 @@ if ($usuario['Rolusu'] === 'Administrador') {
 
     <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
 
- <div id="opciones">
-        <a class="botonesnav" href="./perfil.php">Gestionar Usuarios</a>
-        <a class="botonesnav" href="./rplato.php">Gestionar Platos</a>
-        <a class="botonesnav" href="./mesas.php">Gestionar Mesas</a>
-        <a class="botonesnav" href="./pedidos.php">Gestionar Pedidos</a>
-        <a class="botonesnav" href="./domicilios.php">Gestionar Domicilios</a>
-    </div>
+        <div id="opciones">
+            <a class="botonesnav" href="./perfil.php">Gestionar Usuarios</a>
+            <a class="botonesnav" href="./rplato.php">Gestionar Platos</a>
+            <a class="botonesnav" href="./mesas.php">Gestionar Mesas</a>
+            <a class="botonesnav" href="./pedidos.php">Gestionar Pedidos</a>
+            <a class="botonesnav" href="./domicilios.php">Gestionar Domicilios</a>
+        </div>
+
+        <div class="FReserva">
+            <h1 class="text">Reserva</h1>
+
+            <form class="Reserva" action="../../Controlador/reservaController.php?action=RegistrarR" method="POST">
+                <label>Fecha de Reserva</label>
+                <input type="date" name="FR" required min="<?= $fecha_minima ?>">
+
+                <label>Hora de Reserva</label>
+                <input type="time" name="HR" required min="13:00" max="22:00">
+
+                <label>Numero de Personas</label>
+                <select name="NP">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+
+                <label>Estado</label>
+                <select name="Estado">
+                    <option value="Pendiente" <?= ($ReEditar['Estado'] ?? 'Pendiente') == "Pendiente" ? "selected" : "" ?>>Pendiente</option>
+                    <option value="Confirmada" <?= ($ReEditar['Estado'] ?? '') == "Confirmada" ? "selected" : "" ?>>Confirmada</option>
+                    <option value="Cancelada" <?= ($ReEditar['Estado'] ?? '') == "Cancelada" ? "selected" : "" ?>>Cancelada</option>
+                </select>
+
+                <button type="submit" id="btn">Realizar Reserva</button>
+            </form>
+        </div>
 
         <div class="GesReservas">
             <h1 class="Crear">Gestión de Reservas</h1>
@@ -160,6 +195,7 @@ if ($usuario['Rolusu'] === 'Administrador') {
                     <th>Hora</th>
                     <th>Personas</th>
                     <th>Mesa Asignada</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
                 <?php foreach ($reservas as $r): ?>
@@ -170,7 +206,9 @@ if ($usuario['Rolusu'] === 'Administrador') {
                         <td><?= htmlspecialchars($r['HoraReserva']) ?></td>
                         <td><?= htmlspecialchars($r['NumeroPersonas']) ?></td>
                         <td><?= htmlspecialchars($r['NumeroMesa']) ?></td>
+                        <td><?= htmlspecialchars($r['Estado']) ?></td>
                         <td>
+                            <a id="btn" href="reservas.php?editar=<?= htmlspecialchars($r['ID_RE']) ?>">Editar</a>
                             <form method="POST" action="../../Controlador/reservaController.php?action=EliminarR" style="display: inline;">
                                 <input type="hidden" name="ID_R" value="<?= htmlspecialchars($r['ID_RE']) ?>">
                                 <button id="btn" type="submit" class="delete">Eliminar</button>
@@ -183,7 +221,40 @@ if ($usuario['Rolusu'] === 'Administrador') {
 
     <?php endif; ?>
 
+     <?php if ($usuario['Rolusu'] === 'Administrador' && $ReEditar): ?>
+        <div class="form-edicion">
+            <h2 class="Crear">Editando Reserva: #<?= htmlspecialchars($ReEditar['ID_RE']) ?></h2>
+            
+            <form class="Editar" method="POST" action="../../Controlador/reservaController.php?action=ActualizarR">
+                <input type="hidden" name="ID_R" value="<?= htmlspecialchars($ReEditar['ID_RE']) ?>">
+
+                <label>Fecha de Reserva</label>
+                <input type="date" name="FR" value="<?= htmlspecialchars($ReEditar['FechaReserva']) ?>" required min="<?= $fecha_minima ?>">
+
+                <label>Hora de Reserva</label>
+                <input type="time" name="HR" value="<?= htmlspecialchars($ReEditar['HoraReserva']) ?>" required min="13:00" max="22:00">
+
+                <label>Numero de Personas</label>
+                <input type="number" name="NP" value="<?= htmlspecialchars($ReEditar['NumeroPersonas']) ?>" required min="1" max="8">
+
+                <label>Estado</label>
+                <select name="Estado">
+                    <option value="Pendiente" <?= ($ReEditar['Estado'] ?? 'Pendiente') == "Pendiente" ? "selected" : "" ?>>Pendiente</option>
+                    <option value="Confirmada" <?= ($ReEditar['Estado'] ?? '') == "Confirmada" ? "selected" : "" ?>>Confirmada</option>
+                    <option value="Cancelada" <?= ($ReEditar['Estado'] ?? '') == "Cancelada" ? "selected" : "" ?>>Cancelada</option>
+                </select>
+
+                <label>ID Mesa</label>
+                <input type="number" name="ID_M" value="<?= htmlspecialchars($ReEditar['ID_M']) ?>" required>
+
+                <button id="btn" type="submit" style="margin-top: 15px;">Actualizar</button>
+            </form>
+        </div>
+    <?php endif; ?>
+
 </div>
+
+
 
 </body>
 </html>

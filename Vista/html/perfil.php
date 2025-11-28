@@ -161,13 +161,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editarPerfil'])) {
             <input type="text" name="Apellido" placeholder="Apellido" required>
             <input type="email" name="Email" placeholder="Email" required>
             <input type="password" name="Password" placeholder="Contraseña" required>
-            <input type="text" name="Telefono" placeholder="Teléfono">
+
             <select name="Rolusu">
                 <option value="Administrador">Administrador</option>
                 <option value="Cliente">Cliente</option>
             </select>
+
+            <input type="text" name="Telefono" placeholder="Teléfono">
+
             <button id="btn" type="submit">Añadir Usuario</button>
         </form>
+            
 
         <h2 class="Crear">Usuarios Registrados</h2>
         <table>
@@ -207,11 +211,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editarPerfil'])) {
                     <input type="text" name="Apellido" placeholder="Apellido" value="<?= htmlspecialchars($usuarioEditar['Apellido']) ?>" required>
                     <input type="email" name="Email" placeholder="Correo Electronico" value="<?= htmlspecialchars($usuarioEditar['Email']) ?>" required>
                     <input type="password" name="Password" placeholder="Nueva contraseña (opcional)">
-                    <input type="text" name="Telefono" placeholder="Telefono" value="<?= htmlspecialchars($usuarioEditar['Telefono']) ?>">
                     <select name="Rolusu">
                         <option value="Administrador" <?= $usuarioEditar['Rolusu'] == "Administrador" ? "selected" : "" ?>>Administrador</option>
                         <option value="Cliente" <?= $usuarioEditar['Rolusu'] == "Cliente" ? "selected" : "" ?>>Cliente</option>
                     </select>
+                    <input type="text" name="Telefono" placeholder="Telefono" value="<?= htmlspecialchars($usuarioEditar['Telefono']) ?>">
+                
                     <button id="btn" type="submit">Actualizar</button>
                 </form>
             </div>
