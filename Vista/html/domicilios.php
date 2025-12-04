@@ -165,7 +165,7 @@ if ($esAdmin) {
                         <tr>
                             <th>N° Pedido</th>
                             <th>Fecha</th>
-                            <th>Plato</th>
+                            <th>Platos</th>
                             <th>Estado Pedido</th>
                             <th>Direccion</th>
                             <th>Contacto</th>
