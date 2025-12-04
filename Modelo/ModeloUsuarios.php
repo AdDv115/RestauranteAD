@@ -22,6 +22,14 @@ class Usuario {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function obtenerUsuarios() {
+        $sql = "SELECT ID_User, Nombre, Apellido, Email 
+                FROM usuarios";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     public function obtenerUserPorEmail($email) {
         $sql = "SELECT * FROM usuarios WHERE Email = :Email LIMIT 1";
         $stmt = $this->db->prepare($sql);

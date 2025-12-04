@@ -101,7 +101,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_mesas'])) {
         <h1>Gestión de Mesas</h1>
 
         <h2 class="Crear">Registrar Mesa</h2>
-        <form class="Crear" method="POST" action="../../Controlador/ReservaController.php?action=RegistrarR">
+        <form class="Crear" method="POST" action="../../Controlador/mesaController.php?action=RegistrarR">
             <input type="number" name="NM" placeholder="Numero de la Mesa" required>
             <input type="number" name="CaP" placeholder="Capacidad de la Mesa" required>
             <input type="text" name="UB" placeholder="Ubicacion" required>
@@ -125,11 +125,11 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_mesas'])) {
                 <td><?= htmlspecialchars($m['Ubicacion']) ?></td>
                 <td><?= $m['Disponibilidad'] == 1 ? "Disponible" : "No disponible" ?></td>
                 <td>
-                    <form method="POST" action="reserva.php">
+                    <form method="POST" action="mesas.php">
                         <input type="hidden" name="editar_id" value="<?= htmlspecialchars($m['ID_R']) ?>">
                         <button id="btn" type="submit">Editar</button>
                     </form>
-                    <form method="POST" action="../../Controlador/ReservaController.php?action=EliminarR">
+                    <form method="POST" action="../../Controlador/mesaController.php?action=EliminarR">
                         <input type="hidden" name="ID_R" value="<?= htmlspecialchars($m['ID_R']) ?>">
                         <button id="btn" type="submit" class="delete">Eliminar</button>
                     </form>
@@ -141,7 +141,7 @@ if ($usuario['Rolusu'] === 'Administrador' && empty($_SESSION['lista_mesas'])) {
         <?php if ($ReEditar): ?>
         <div class="form-edicion">
             <h2 class="Crear">Editando Mesa: <?= htmlspecialchars($ReEditar['NumeroMesa']) ?></h2>
-            <form class="Editar" method="POST" action="../../Controlador/ReservaController.php?action=ActualizarR">
+            <form class="Editar" method="POST" action="../../Controlador/mesaController.php?action=ActualizarR">
                 <input type="hidden" name="ID_R" value="<?= htmlspecialchars($ReEditar['ID_R']) ?>">
                 <input type="number" name="NM" value="<?= htmlspecialchars($ReEditar['NumeroMesa']) ?>" required>
                 <input type="number" name="CaP" value="<?= htmlspecialchars($ReEditar['Capacidad']) ?>" required>

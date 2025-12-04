@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 27-11-2025 a las 01:22:35
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Host: 127.0.0.1
+-- Generation Time: Dec 04, 2025 at 03:47 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `resad`
+-- Database: `resad`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `domicilios`
+-- Table structure for table `domicilios`
 --
 
 CREATE TABLE `domicilios` (
@@ -37,16 +37,16 @@ CREATE TABLE `domicilios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `domicilios`
+-- Dumping data for table `domicilios`
 --
 
 INSERT INTO `domicilios` (`ID_Domicilio`, `ID_Pedido`, `DireccionEntrega`, `ContactoEntrega`, `EstadoEntrega`, `FechaCreacion`) VALUES
-(1, 11, 'Calle 49', 'e@m.com', 'Pendiente', '2025-11-27 00:03:01');
+(2, 13, 'Calle 2', '123', 'Pendiente', '2025-12-04 14:44:26');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `mesas`
+-- Table structure for table `mesas`
 --
 
 CREATE TABLE `mesas` (
@@ -58,16 +58,18 @@ CREATE TABLE `mesas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `mesas`
+-- Dumping data for table `mesas`
 --
 
 INSERT INTO `mesas` (`ID_R`, `NumeroMesa`, `Capacidad`, `Ubicacion`, `Disponibilidad`) VALUES
-(2, 1, 24, 'Alla', 1);
+(2, 1, 8, 'Esquina A', 1),
+(3, 2, 4, 'Esquina B', 1),
+(4, 3, 3, 'Centro', 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `pedidos`
+-- Table structure for table `pedidos`
 --
 
 CREATE TABLE `pedidos` (
@@ -82,17 +84,17 @@ CREATE TABLE `pedidos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `pedidos`
+-- Dumping data for table `pedidos`
 --
 
 INSERT INTO `pedidos` (`ID_P`, `NumeroPedido`, `FechaPedido`, `CantidadPlatos`, `Estado`, `ID_Plato`, `ID_User`, `ID_Mesa`) VALUES
-(11, 1764200326, '2025-11-28', 1, 'Pendiente', 9, 11, 2),
-(12, 1764200326, '2025-11-28', 1, 'Pendiente', 10, 11, 2);
+(13, 1764859454, '2025-12-05', 1, 'Pendiente', 1, 11, NULL),
+(14, 1764859454, '2025-12-05', 1, 'Pendiente', 10, 11, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `platos`
+-- Table structure for table `platos`
 --
 
 CREATE TABLE `platos` (
@@ -105,7 +107,7 @@ CREATE TABLE `platos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `platos`
+-- Dumping data for table `platos`
 --
 
 INSERT INTO `platos` (`ID_Plato`, `NombrePlato`, `Descripcion`, `Precio`, `ImagenUrl`, `Disponible`) VALUES
@@ -116,7 +118,7 @@ INSERT INTO `platos` (`ID_Plato`, `NombrePlato`, `Descripcion`, `Precio`, `Image
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `reservas`
+-- Table structure for table `reservas`
 --
 
 CREATE TABLE `reservas` (
@@ -124,21 +126,23 @@ CREATE TABLE `reservas` (
   `NumeroPersonas` int(11) DEFAULT NULL,
   `FechaReserva` date DEFAULT NULL,
   `HoraReserva` time DEFAULT NULL,
+  `Estado` varchar(100) NOT NULL,
   `ID_User` int(11) DEFAULT NULL,
   `ID_M` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `reservas`
+-- Dumping data for table `reservas`
 --
 
-INSERT INTO `reservas` (`ID_RE`, `NumeroPersonas`, `FechaReserva`, `HoraReserva`, `ID_User`, `ID_M`) VALUES
-(1, 3, '2025-11-28', '17:05:00', 10, 2);
+INSERT INTO `reservas` (`ID_RE`, `NumeroPersonas`, `FechaReserva`, `HoraReserva`, `Estado`, `ID_User`, `ID_M`) VALUES
+(1, 3, '2025-12-04', '17:05:00', 'Pendiente', 10, 2),
+(3, 3, '2025-12-05', '17:12:00', 'Pendiente', 11, 2);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuarios`
+-- Table structure for table `usuarios`
 --
 
 CREATE TABLE `usuarios` (
@@ -153,33 +157,33 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `usuarios`
+-- Dumping data for table `usuarios`
 --
 
 INSERT INTO `usuarios` (`ID_User`, `Nombre`, `Apellido`, `Email`, `Passwrd`, `Rolusu`, `Telefono`, `ImagenPerfil`) VALUES
-(1, 'Brandon', 'Administrador', 'b@gmail.com', '$2y$10$mbJyoWAp3SzUhR/gHa9lA.6I4/8ZUjMRyewGIHCFVlPtApTnW6ZKO', 'Administrador', '3011613525', 0x37356264626331612d643235342d343762382d613939642d6634616366306331316339382e6a706567),
+(1, 'Brandon', 'Administrador', 'b@gmail.com', '$2y$10$mbJyoWAp3SzUhR/gHa9lA.6I4/8ZUjMRyewGIHCFVlPtApTnW6ZKO', 'Administrador', '3011613525', 0x315f313736343835323237322e6a7067),
 (10, 'Ola', 'Mar', 'o@m.com', '$2y$10$fy9A/Tsjm0E3CA0uLNpGPOaEYpub0i13lB7OYyMDQP2cizbWYW756', 'Cliente', '134', NULL),
 (11, 'Ethan', 'Velez', 'e@m.com', '$2y$10$LdmM9Gelm0MpCn4je4oq4O2F9GH.gmJFUQumGfi5316rf8Pp4sU8W', 'Cliente', '315660555', 0x31315f313736343138353936382e6a7067);
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `domicilios`
+-- Indexes for table `domicilios`
 --
 ALTER TABLE `domicilios`
   ADD PRIMARY KEY (`ID_Domicilio`),
   ADD KEY `fk_domicilio_pedido` (`ID_Pedido`);
 
 --
--- Indices de la tabla `mesas`
+-- Indexes for table `mesas`
 --
 ALTER TABLE `mesas`
   ADD PRIMARY KEY (`ID_R`);
 
 --
--- Indices de la tabla `pedidos`
+-- Indexes for table `pedidos`
 --
 ALTER TABLE `pedidos`
   ADD PRIMARY KEY (`ID_P`),
@@ -188,13 +192,13 @@ ALTER TABLE `pedidos`
   ADD KEY `ID_Mesa` (`ID_Mesa`);
 
 --
--- Indices de la tabla `platos`
+-- Indexes for table `platos`
 --
 ALTER TABLE `platos`
   ADD PRIMARY KEY (`ID_Plato`);
 
 --
--- Indices de la tabla `reservas`
+-- Indexes for table `reservas`
 --
 ALTER TABLE `reservas`
   ADD PRIMARY KEY (`ID_RE`),
@@ -202,63 +206,63 @@ ALTER TABLE `reservas`
   ADD KEY `ID_M` (`ID_M`);
 
 --
--- Indices de la tabla `usuarios`
+-- Indexes for table `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`ID_User`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `domicilios`
+-- AUTO_INCREMENT for table `domicilios`
 --
 ALTER TABLE `domicilios`
-  MODIFY `ID_Domicilio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID_Domicilio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `mesas`
+-- AUTO_INCREMENT for table `mesas`
 --
 ALTER TABLE `mesas`
-  MODIFY `ID_R` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_R` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla `pedidos`
+-- AUTO_INCREMENT for table `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `ID_P` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `ID_P` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT de la tabla `platos`
+-- AUTO_INCREMENT for table `platos`
 --
 ALTER TABLE `platos`
   MODIFY `ID_Plato` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT de la tabla `reservas`
+-- AUTO_INCREMENT for table `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `ID_RE` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_RE` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `usuarios`
+-- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
   MODIFY `ID_User` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- Restricciones para tablas volcadas
+-- Constraints for dumped tables
 --
 
 --
--- Filtros para la tabla `domicilios`
+-- Constraints for table `domicilios`
 --
 ALTER TABLE `domicilios`
   ADD CONSTRAINT `fk_domicilio_pedido` FOREIGN KEY (`ID_Pedido`) REFERENCES `pedidos` (`ID_P`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `pedidos`
+-- Constraints for table `pedidos`
 --
 ALTER TABLE `pedidos`
   ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`ID_Plato`) REFERENCES `platos` (`ID_Plato`),
@@ -266,7 +270,7 @@ ALTER TABLE `pedidos`
   ADD CONSTRAINT `pedidos_ibfk_3` FOREIGN KEY (`ID_Mesa`) REFERENCES `mesas` (`ID_R`);
 
 --
--- Filtros para la tabla `reservas`
+-- Constraints for table `reservas`
 --
 ALTER TABLE `reservas`
   ADD CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`ID_User`) REFERENCES `usuarios` (`ID_User`),

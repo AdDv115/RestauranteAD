@@ -14,9 +14,12 @@ $usuario = $_SESSION['usuario_logueado'];
 $modelPedidos = new Pedidos();
 $modelPlatos = new Plato();
 $modelMesas = new Mesas();
+$modelUsuarios = new Usuario();
 
 $platos = $modelPlatos->obtenerPlato() ?? [];
 $mesasDisponibles = $modelMesas->obtenerMesasDisponibles() ?? [];
+
+$usuarios = $modelUsuarios->obtenerUsuarios() ?? [];
 
 $misPedidos = $modelPedidos->obtenerPedidosPorUsuario($usuario['ID_User']) ?? [];
 
@@ -56,6 +59,7 @@ foreach ($pedidosAdmin as $p) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -63,6 +67,28 @@ foreach ($pedidosAdmin as $p) {
     <title>Pedidos</title>
     <link href="../css/pedidos.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const radios = document.querySelectorAll('input[name="tipo_pedido"]');
+    const bloqueLocal = document.getElementById('bloque-local');
+    const selectMesa = document.getElementById('select-mesa');
+
+    function actualizarVista() {
+        const seleccionado = document.querySelector('input[name="tipo_pedido"]:checked').value;
+        if (seleccionado === 'local') {
+            bloqueLocal.style.display = 'block';
+            selectMesa.required = true;
+        } else {
+            bloqueLocal.style.display = 'none';
+            selectMesa.required = false;
+        }
+    }
+
+    radios.forEach(r => r.addEventListener('change', actualizarVista));
+
+    actualizarVista();
+});
+</script>
 <body>
 <?php if ($usuario): ?>
     <?php if ($usuario['Rolusu'] === 'Administrador'): ?>
@@ -150,33 +176,51 @@ foreach ($pedidosAdmin as $p) {
                 </table>
 
                 <form class="Crear2" action="../../Controlador/pedidoController.php?action=guardarPedido" method="POST">
-                    <label>Seleccionar Mesa Disponible</label>
-                    <div>
-                        <select name="id_mesa" required>
-                            <option value="">-- Selecciona una Mesa --</option>
-                            <?php foreach($mesasDisponibles as $mesa): ?>
-                                <option value="<?= htmlspecialchars($mesa['ID_R']) ?>">
-                                    Mesa <?= htmlspecialchars($mesa['NumeroMesa']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+    <!-- TIPO DE PEDIDO -->
+    <label>¿Cómo deseas tu pedido?</label>
+    <div class="tipo-pedido">
+        <label>
+            <input type="radio" name="tipo_pedido" value="local" checked>
+            Consumir en el restaurante
+        </label>
+        <label>
+            <input type="radio" name="tipo_pedido" value="domicilio">
+            A domicilio
+        </label>
+    </div>
 
-                    <label>Fecha del pedido</label>
-                    <input type="date" name="fecha_pedido" required min="<?= $fecha_minima ?>">
+    <!-- SOLO PARA LOCAL: MESA -->
+    <div id="bloque-local">
+        <label>Seleccionar Mesa Disponible</label>
+        
+        <div>
+                <select name="id_mesa" id="select-mesa">
+                    <option value="">-- Selecciona una Mesa --</option>
+                        <?php foreach($mesasDisponibles as $mesa): ?>
+                            <option value="<?= htmlspecialchars($mesa['ID_R']) ?>">
+                                Mesa <?= htmlspecialchars($mesa['NumeroMesa']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
 
-                    <label>Hora del pedido</label>
-                    <input type="time" name="hora_pedido" required min="13:00" max="22:00">
+                <label>Fecha del pedido</label>
+                <input type="date" name="fecha_pedido" required min="<?= $fecha_minima ?>">
 
-                    <button type="submit" id="btn" style="margin-top: 10px;">Confirmar Pedido</button>
-                </form>
+                <label>Hora del pedido</label>
+                <input type="time" name="hora_pedido" required min="13:00" max="22:00">
+
+                <button type="submit" id="btn">Confirmar Pedido</button>
+        </form>
+
             <?php else: ?>
                 <p class="text">No tienes platos en tu pedido. Ve al <a href="menu.php">menú</a> y añade algunos.</p>
             <?php endif; ?>
         </div>
         
         <div class="ListaPedidos">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
                 <h2 class="Crear">Mis Pedidos Recientes</h2>
             </div>
             <table>
@@ -221,6 +265,14 @@ foreach ($pedidosAdmin as $p) {
 
     <div class="GesAdmin">
         
+    <?php if (isset($_SESSION['error_pedido'])): ?>
+            <p style="color: red; font-weight: bold;">
+                <?= htmlspecialchars($_SESSION['error_pedido']) ?>
+            </p>
+        <?php unset($_SESSION['error_pedido']); ?>
+    <?php endif; ?>
+
+
         <h1>Gestión de Pedidos</h1>
 
         <h2 class="Crear">Pedidos en el Sistema</h2>
@@ -243,11 +295,11 @@ foreach ($pedidosAdmin as $p) {
                 <td><?= htmlspecialchars(trim(($p['Nombre'] ?? '') . ' ' . ($p['Apellido'] ?? ''))) ?></td>
                 <td><?= htmlspecialchars($p['Estado'] ?? 'Pendiente') ?></td>
                 <td>
-                    <form method="POST" action="pedidos.php" style="display:inline;">
+                    <form method="POST" action="pedidos.php">
                         <input type="hidden" name="editar_id" value="<?= htmlspecialchars($p['ID_P']) ?>">
                         <button id="btn" type="submit">Editar</button>
                     </form>
-                    <form method="POST" action="../../Controlador/pedidoController.php?action=EliminarP" style="display:inline;">
+                    <form method="POST" action="../../Controlador/pedidoController.php?action=EliminarP">
                         <input type="hidden" name="ID_P" value="<?= htmlspecialchars($p['ID_P']) ?>">
                         <button id="btn" type="submit" class="delete">Eliminar</button>
                     </form>
@@ -273,11 +325,25 @@ foreach ($pedidosAdmin as $p) {
                 <input type="hidden" name="ID_Plato" value="<?= htmlspecialchars($PeEditar['ID_Plato']) ?>">
                 <input type="hidden" name="NumeroPedido" value="<?= htmlspecialchars($PeEditar['NumeroPedido']) ?>">
 
-                <label>ID Cliente</label>
-                <input type="number" name="ID_User" value="<?= htmlspecialchars($PeEditar['ID_User']) ?>" required>
+                <label>Cliente</label>
+                <select name="ID_User" required>
+                    <option value="">-- Selecciona un Cliente --</option>
+                    <?php foreach ($usuarios as $user): ?>
+                    <option value="<?= htmlspecialchars($user['ID_User']) ?>"<?= $user['ID_User'] == $PeEditar['ID_User'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($user['Nombre'] . ' ' . $user['Apellido']) ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+
             
-                <label>ID Mesa</label>
-                <input type="number" name="ID_Mesa" value="<?= htmlspecialchars($PeEditar['ID_Mesa']) ?>" required>
+                <label>Mesa</label>
+                <select name="ID_Mesa" required>
+                    <option value="">-- Selecciona una Mesa --</option>
+                    <?php foreach ($mesasDisponibles as $mesa): ?>
+                    <option value="<?= htmlspecialchars($mesa['ID_R']) ?>" <?= $mesa['ID_R'] == $PeEditar['ID_Mesa'] ? 'selected' : '' ?>
+                    >Mesa <?= htmlspecialchars($mesa['NumeroMesa']) ?></option>
+                    <?php endforeach; ?>
+                </select>
             
                 <label>Fecha Pedido</label>
                 <input type="datetime-local" name="FechaPedido" 
@@ -294,7 +360,7 @@ foreach ($pedidosAdmin as $p) {
                     <option value="Cancelado"      <?= $PeEditar['Estado'] == "Cancelado" ? "selected" : "" ?>>Cancelado</option>
                 </select>
 
-                <button id="btn" type="submit" style="margin-top: 15px;">Actualizar</button>
+                <button id="btn" type="submit">Actualizar</button>
             </form>
 
             <div>
@@ -310,7 +376,7 @@ foreach ($pedidosAdmin as $p) {
                         <td><?= htmlspecialchars($linea['NombrePlato']) ?></td>
                         <td><?= htmlspecialchars($linea['CantidadPlatos']) ?></td>
                         <td>
-                            <form method="POST" action="../../Controlador/pedidoController.php?action=EliminarP" style="display:inline;">
+                            <form method="POST" action="../../Controlador/pedidoController.php?action=EliminarP">
                                 <input type="hidden" name="ID_P" value="<?= htmlspecialchars($linea['ID_P']) ?>">
                                 <button id="btn" type="submit" class="delete">Eliminar plato</button>
                             </form>

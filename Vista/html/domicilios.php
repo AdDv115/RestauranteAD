@@ -164,9 +164,8 @@ if ($esAdmin) {
                     <table>
                         <tr>
                             <th>N° Pedido</th>
-                            <th>Plato</th>
                             <th>Fecha</th>
-                            <th>Mesa</th>
+                            <th>Plato</th>
                             <th>Estado Pedido</th>
                             <th>Direccion</th>
                             <th>Contacto</th>
@@ -180,7 +179,6 @@ if ($esAdmin) {
                             <td><?= htmlspecialchars($numPedido) ?></td>
                             <td><?= htmlspecialchars($p['FechaPedido']) ?></td>
                             <td><?= htmlspecialchars($p['NombrePlato'] ?? '') ?></td>
-                            <td><?= htmlspecialchars($p['NumeroMesa'] ?? 'N/A') ?></td>
                             <td><?= htmlspecialchars($p['Estado'] ?? 'Pendiente') ?></td>
                             <td><?= htmlspecialchars($dom['DireccionEntrega'] ?? 'No asignada') ?></td>
                             <td><?= htmlspecialchars($dom['ContactoEntrega'] ?? 'No asignado') ?></td>

@@ -46,7 +46,7 @@ class PedidoController {
             $Estado       = 'Pendiente';
 
             if ($ID_Mesa > 0 && $Cantidad > 0 && is_array($platosSeleccionados) && count($platosSeleccionados) > 0) {
-                if ($this->modelPedidos->mesaOcupadaEnFecha($ID_Mesa, $FechaPedido)) {
+                if ($this -> modelPedidos-> mesaOcupadaEnFecha($ID_Mesa, $FechaPedido)) {
                     $_SESSION['error_pedido'] = 'La mesa ya tiene un pedido para esa fecha.';
                     header("Location: ../Vista/html/pedidos.php");
                     exit();
@@ -97,7 +97,7 @@ class PedidoController {
         $ID_Plato       = intval($_POST['ID_Plato'] ?? 0);
         $ID_User        = intval($_POST['ID_User'] ?? 0);
         $ID_Mesa        = intval($_POST['ID_Mesa'] ?? 0);
-        $Estado         = $_POST['Estado'] ?? 'Pendiente';
+        $Estado         = $_POST['Estado'];
 
         if ($FechaPedido !== '') {
             $FechaPedido = str_replace('T', ' ', $FechaPedido);
@@ -111,24 +111,26 @@ class PedidoController {
             $ID_Plato > 0 &&
             $ID_User > 0 &&
             $ID_Mesa > 0
-        ) {
-            if ($this->modelPedidos->mesaOcupadaEnFecha($ID_Mesa, $FechaPedido)) {
-                $_SESSION['error_pedido'] = 'La mesa ya tiene un pedido para esa fecha.';
-                header("Location: ../Vista/html/pedidos.php");
-                exit();
-            }
+            ) {
+    
+    if ($this->modelPedidos->mesaOcupadaEnFecha($ID_Mesa, $FechaPedido, $id)) {
+        $_SESSION['error_pedido'] = 'La mesa ya tiene un pedido para esa fecha.';
+        header("Location: ../Vista/html/pedidos.php");
+        exit();
+    }
 
-            $this->modelPedidos->actualizarPedidos(
-                $id,
-                $NumeroPedido,
-                $FechaPedido,
-                $CantidadPlatos,
-                $ID_Plato,
-                $ID_User,
-                $ID_Mesa,
-                $Estado
-            );
-        }
+    $this->modelPedidos->actualizarPedidos(
+        $id,
+        $NumeroPedido,
+        $FechaPedido,
+        $CantidadPlatos,
+        $ID_Plato,
+        $ID_User,
+        $ID_Mesa,
+        $Estado
+    );
+}
+
 
         header("Location: ../Vista/html/pedidos.php");
         exit();
@@ -163,46 +165,82 @@ class PedidoController {
     }
 
     public function guardarPedidoDesdeCarrito() {
-        if (!isset($_SESSION['usuario_logueado'])) {
-            header("Location: ../Vista/html/login.php");
-            exit();
-        }
+    if (!isset($_SESSION['usuario_logueado'])) {
+        header("Location: ../Vista/html/login.php");
+        exit();
+    }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $usuario = $_SESSION['usuario_logueado'];
-            $ID_User = $usuario['ID_User'];
-            $ID_Mesa = intval($_POST['id_mesa'] ?? 0);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $usuario = $_SESSION['usuario_logueado'];
+        $ID_User = $usuario['ID_User'];
 
-            $FechaPedido  = $this->obtenerFechaPedidoDesdePost();
-            $NumeroPedido = time();
-            $Estado       = 'Pendiente';
+        $tipoPedido = $_POST['tipo_pedido'] ?? 'local';
 
-            if (!empty($_SESSION['carrito']) && $ID_Mesa > 0) {
-                if ($this->modelPedidos->mesaOcupadaEnFecha($ID_Mesa, $FechaPedido)) {
-                    $_SESSION['error_pedido'] = 'La mesa ya tiene un pedido para esa fecha.';
-                    header("Location: ../Vista/html/pedidos.php");
-                    exit();
-                }
+        $FechaPedido  = $this->obtenerFechaPedidoDesdePost();
+        $NumeroPedido = time();
+        $Estado       = 'Pendiente';
 
-                foreach ($_SESSION['carrito'] as $item) {
-                    $this->modelPedidos->RegistrarPedidos(
-                        $NumeroPedido,
-                        $FechaPedido,
-                        $item['cantidad'],
-                        $item['id_plato'],
-                        $ID_User,
-                        $ID_Mesa,
-                        $Estado
-                    );
-                }
-
-                $_SESSION['carrito'] = [];
-            }
-
+        if (empty($_SESSION['carrito'])) {
+            $_SESSION['error_pedido'] = 'No hay platos en el carrito.';
             header("Location: ../Vista/html/pedidos.php");
             exit();
         }
+
+        if ($tipoPedido === 'local') {
+
+            $ID_Mesa = intval($_POST['id_mesa'] ?? 0);
+
+            if ($ID_Mesa <= 0) {
+                $_SESSION['error_pedido'] = 'Debes seleccionar una mesa para un pedido local.';
+                header("Location: ../Vista/html/pedidos.php");
+                exit();
+            }
+
+            if ($this->modelPedidos->mesaOcupadaEnFecha($ID_Mesa, $FechaPedido)) {
+                $_SESSION['error_pedido'] = 'La mesa ya tiene un pedido para esa fecha.';
+                header("Location: ../Vista/html/pedidos.php");
+                exit();
+            }
+
+            foreach ($_SESSION['carrito'] as $item) {
+                $this->modelPedidos->RegistrarPedidos(
+                    $NumeroPedido,
+                    $FechaPedido,
+                    $item['cantidad'],
+                    $item['id_plato'],
+                    $ID_User,
+                    $ID_Mesa,
+                    $Estado
+                );
+            }
+
+            $_SESSION['carrito'] = [];
+            header("Location: ../Vista/html/pedidos.php");
+            exit();
+
+        } else {
+
+            $ID_Mesa = null;
+
+            foreach ($_SESSION['carrito'] as $item) {
+                $this->modelPedidos->RegistrarPedidos(
+                    $NumeroPedido,
+                    $FechaPedido,
+                    $item['cantidad'],
+                    $item['id_plato'],
+                    $ID_User,
+                    $ID_Mesa,
+                    $Estado
+                );
+            }
+
+            $_SESSION['carrito'] = [];
+            header("Location: ../Vista/html/domicilios.php");
+            exit();
+        }
     }
+}
+
 
     public function removeFromCart() {
         $id_plato = intval($_GET['id_plato'] ?? 0);

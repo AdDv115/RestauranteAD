@@ -100,17 +100,28 @@ class Pedidos {
         return $stmt->execute([$id]);
     }
 
-    public function mesaOcupadaEnFecha($idMesa, $fechaPedido) {
-        $sql = "SELECT COUNT(*) AS total 
-                FROM pedidos 
-                WHERE ID_Mesa = :mesa 
-                  AND DATE(FechaPedido) = DATE(:fecha)
-                  AND Estado != 'Cancelado'";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':mesa', $idMesa, PDO::PARAM_INT);
-        $stmt->bindParam(':fecha', $fechaPedido);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return ($row && $row['total'] > 0);
+    public function mesaOcupadaEnFecha($idMesa, $fechaPedido, $idExcluir = null) {
+    $sql = "SELECT COUNT(*) AS total 
+            FROM pedidos 
+            WHERE ID_Mesa = :mesa 
+              AND DATE(FechaPedido) = DATE(:fecha)
+              AND Estado != 'Cancelado'";
+
+    if ($idExcluir !== null) {
+        $sql .= " AND ID_P != :idExcluir";
     }
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':mesa', $idMesa, PDO::PARAM_INT);
+    $stmt->bindParam(':fecha', $fechaPedido);
+
+    if ($idExcluir !== null) {
+        $stmt->bindParam(':idExcluir', $idExcluir, PDO::PARAM_INT);
+    }
+
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return ($row && $row['total'] > 0);
+}
+
 }
