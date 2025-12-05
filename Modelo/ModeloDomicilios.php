@@ -64,4 +64,5 @@ class Domicilios {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$id]);
     }
+
 }

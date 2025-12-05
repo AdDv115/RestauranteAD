@@ -78,7 +78,7 @@ class DomicilioController {
             }
         }
 
-        header("Location: ../Vista/html/pedidos.php");
+        header("Location: ../Vista/html/domicilios.php");
         exit();
     }
 

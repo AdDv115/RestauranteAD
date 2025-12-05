@@ -124,18 +124,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_id'])) {
         <h2 class="Crear">Platos Registrados</h2>
         <table>
             <tr>
-                <th>ID</th><th>Nombre</th><th>Descripción</th><th>Imagen</th><th>Precio</th><th>Disponible</th><th>Acciones</th>
+                <th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Disponible</th><th>Acciones</th>
             </tr>
             <?php foreach ($platos as $p): ?>
             <tr>
                 <td><?= htmlspecialchars($p['ID_Plato']) ?></td>
                 <td><?= htmlspecialchars($p['NombrePlato']) ?></td>
                 <td><?= htmlspecialchars($p['Descripcion']) ?></td>
-                <td>
-                    <img" 
-                         src="../img/platos/<?= htmlspecialchars($p['ImagenUrl'] ?? 'default.png')?>" 
-                         alt="Foto del plato">
-                </td>
                 <td>$<?= htmlspecialchars($p['Precio']) ?></td>
                 <td><?= $p['Disponible'] == 1 ? "Disponible" : "No disponible" ?></td>
                 <td>

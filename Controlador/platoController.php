@@ -46,7 +46,7 @@ class PlatoController {
             $actualizacion_exitosa = true;
 
             if (!empty($ImagenUrl) && $_FILES['Imagen']['error'] == UPLOAD_ERR_OK) {
-                // Corrección de la ruta en actualizarPlato
+
                 $ruta_destino = dirname(__DIR__) . "/Vista/img/platos/" . basename($ImagenUrl);
                 if (!move_uploaded_file($_FILES['Imagen']['tmp_name'], $ruta_destino)) {
                      $actualizacion_exitosa = false;

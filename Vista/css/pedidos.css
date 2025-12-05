@@ -74,6 +74,16 @@ ul {
     padding: 20px;
 }
 
+.tipo-pedido {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #E5D0AC;
+    padding: 5px;
+    border-radius: 5px;
+    color: black;
+}
+
 .user {
     background-color: #C14600;
     padding: 40px;
@@ -139,22 +149,6 @@ ul {
 
 #form-edicion-perfil, #form-edicion-admin {
     scroll-margin-top: 20px;
-}
-
-.alerta-php {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid #f5c6cb;
-    border-radius: .25rem;
-    text-align: center;
-}
-
-.alerta-php.success {
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #c3e6cb;
 }
 
 /*Gestion de administrador*/

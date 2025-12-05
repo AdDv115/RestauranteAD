@@ -87,6 +87,18 @@ class PedidoController {
         }
     }
 
+    public function eliminarPedidoDom() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = intval($_POST['ID_P'] ?? 0);
+            if ($id > 0) {
+                $this->modelPedidos->eliminarPedidos($id);
+            }
+
+            header("Location: ../Vista/html/domicilios.php");
+            exit();
+        }
+    }
+
     public function actualizarPedido() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = intval($_POST['ID_P'] ?? 0);
@@ -262,6 +274,9 @@ if (isset($_GET['action'])) {
             break;
         case 'EliminarP':
             $controller->eliminarPedido();
+            break;
+        case 'EliminarPD':
+            $controller->eliminarPedidoDom();
             break;
         case 'ActualizarP':
             $controller->actualizarPedido();

@@ -175,10 +175,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     <?php endforeach; ?>
                 </table>
 
-                <form class="Crear2" action="../../Controlador/pedidoController.php?action=guardarPedido" method="POST">
+    <form class="Crear2" action="../../Controlador/pedidoController.php?action=guardarPedido" method="POST">
+        
     <!-- TIPO DE PEDIDO -->
     <label>¿Cómo deseas tu pedido?</label>
     <div class="tipo-pedido">
+
         <label>
             <input type="radio" name="tipo_pedido" value="local" checked>
             Consumir en el restaurante

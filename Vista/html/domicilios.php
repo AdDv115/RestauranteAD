@@ -107,7 +107,6 @@ if ($esAdmin) {
                 <table>
                     <tr>
                         <th>N° Pedido</th>
-                        <th>Plato</th>
                         <th>Fecha</th>
                         <th>Cliente</th>
                         <th>Direccion de entrega</th>
@@ -118,7 +117,6 @@ if ($esAdmin) {
                     <?php foreach ($domicilios as $d): ?>
                     <tr>
                         <td><?= htmlspecialchars($d['NumeroPedido'] ?? $d['ID_Pedido'] ?? 'N/A') ?></td>
-                        <td><?= htmlspecialchars($platos['NombrePlato'] ?? '') ?></td>
                         <td><?= htmlspecialchars($d['FechaPedido'] ?? '') ?></td>
                         <td><?= htmlspecialchars(trim(($d['Nombre'] ?? '') . ' ' . ($d['Apellido'] ?? ''))) ?></td>
                         <td>
@@ -141,12 +139,16 @@ if ($esAdmin) {
                                     <?php endforeach; ?>
                                 </select>
                         </td>
-                        <td style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <td>
                                 <button id="btn" type="submit">Actualizar</button>
                             </form>
                             <form method="POST" action="../../Controlador/domicilioController.php?action=entregado">
                                 <input type="hidden" name="ID_Domicilio" value="<?= htmlspecialchars($d['ID_Domicilio']) ?>">
                                 <button id="btn" type="submit">Marcar entregado</button>
+                            </form>
+                            <form method="POST" action="../../Controlador/pedidoController.php?action=EliminarPD">
+                                <input type="hidden" name="ID_P" value="<?= htmlspecialchars($p['ID_P']) ?>">
+                                <button id="btn" type="submit" class="delete">Eliminar</button>
                             </form>
                         </td>
                     </tr>
@@ -165,7 +167,6 @@ if ($esAdmin) {
                         <tr>
                             <th>N° Pedido</th>
                             <th>Fecha</th>
-                            <th>Platos</th>
                             <th>Estado Pedido</th>
                             <th>Direccion</th>
                             <th>Contacto</th>
@@ -178,17 +179,20 @@ if ($esAdmin) {
                         <tr>
                             <td><?= htmlspecialchars($numPedido) ?></td>
                             <td><?= htmlspecialchars($p['FechaPedido']) ?></td>
-                            <td><?= htmlspecialchars($p['NombrePlato'] ?? '') ?></td>
                             <td><?= htmlspecialchars($p['Estado'] ?? 'Pendiente') ?></td>
                             <td><?= htmlspecialchars($dom['DireccionEntrega'] ?? 'No asignada') ?></td>
                             <td><?= htmlspecialchars($dom['ContactoEntrega'] ?? 'No asignado') ?></td>
                             <td><?= htmlspecialchars($dom['EstadoEntrega'] ?? 'Pendiente') ?></td>
                             <td>
-                                <form method="POST" action="../../Controlador/domicilioController.php?action=registrar" style="display: grid; gap: 6px;">
+                                <form method="POST" action="../../Controlador/domicilioController.php?action=registrar">
                                     <input type="hidden" name="ID_Pedido" value="<?= htmlspecialchars($p['ID_P']) ?>">
                                     <input type="text" name="DireccionEntrega" placeholder="Direccion de entrega" value="<?= htmlspecialchars($dom['DireccionEntrega'] ?? '') ?>" required>
                                     <input type="text" name="ContactoEntrega" placeholder="Contacto (tel/correo)" value="<?= htmlspecialchars($dom['ContactoEntrega'] ?? '') ?>" required>
                                     <button id="btn" type="submit"><?= $dom ? 'Actualizar' : 'Solicitar' ?></button>
+                                </form>
+                                <form method="POST" action="../../Controlador/pedidoController.php?action=EliminarPD">
+                                    <input type="hidden" name="ID_P" value="<?= htmlspecialchars($p['ID_P']) ?>">
+                                    <button id="btn" type="submit" class="delete">Eliminar</button>
                                 </form>
                             </td>
                         </tr>
